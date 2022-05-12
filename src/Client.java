@@ -87,23 +87,7 @@ public class Client
         //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
     }
 
-    public String isNameAllowed(String nameIn){ // checks if the user has entered a first and last name
-        Scanner console = new Scanner(System.in);
-        String[] split_name = nameIn.split(" "); // splits input string into a String array
 
-        boolean name_allowed = false;
-        while(!name_allowed){ // loops until true
-            if(split_name.length != 2){ // if this is false user hasn't entered two names
-                System.out.print("Please enter a first and last name: ");
-                nameIn = console.nextLine();
-                split_name = nameIn.split(" ");
-            }
-            else{
-                name_allowed = true; // ends loop
-            }
-        }
-        return nameIn; // returns potentially modified nane.
-    }
 
 
 

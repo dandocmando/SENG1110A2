@@ -17,7 +17,7 @@ public class CalculatorInterface
         Account account = new Account();
         System.out.print("Please enter your full name: ");
         String nameIn = console.nextLine();
-        nameIn = client.isNameAllowed(nameIn); // passes name back into nameIn
+        nameIn = isNameAllowed(nameIn); // passes name back into nameIn
 
         client.setName(nameIn); // assigns the String name var in the client object with name var defined by user
 
@@ -235,19 +235,12 @@ public class CalculatorInterface
     }
 
     public void addClient(){
+        ObjectIO io = new ObjectIO();
         Scanner console = new Scanner(System.in); // creates new Scanner object as console
-        Client client = new Client(); // creates the required objects from Client & Account classes
-        Account account = new Account();
-        OpenCSVReader openCsvReader = new OpenCSVReader();
-
-
         System.out.print("Please enter your full name: ");
         String nameIn = console.nextLine();
-        nameIn = client.isNameAllowed(nameIn); // passes name back into nameIn
-
-
-        client.setName(nameIn); // assigns the String name var in the client object with name var defined by user
-
+        nameIn = isNameAllowed(nameIn); // passes name back into nameIn
+        io.inputAccount(20,52,300);
 
 
 
@@ -272,10 +265,29 @@ public class CalculatorInterface
     public void dispAllClient(){
 
     }
+    public String isNameAllowed(String nameIn){ // checks if the user has entered a first and last name
+        Scanner console = new Scanner(System.in);
+        String[] split_name = nameIn.split(" "); // splits input string into a String array
+
+        boolean name_allowed = false;
+        while(!name_allowed){ // loops until true
+            if(split_name.length != 2){ // if this is false user hasn't entered two names
+                System.out.print("Please enter a first and last name: ");
+                nameIn = console.nextLine();
+                split_name = nameIn.split(" ");
+            }
+            else{
+                name_allowed = true; // ends loop
+            }
+        }
+        return nameIn; // returns potentially modified nane.
+    }
 
 
     public static void main(String[] args)
     {
+        final int maxClients = 5;
+
         CalculatorInterface calc = new CalculatorInterface(); // creates new CalculatorInterface object as calc
         //calc.run(); // runs run function inside calc object
         calc.menu();

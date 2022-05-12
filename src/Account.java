@@ -8,8 +8,9 @@ SENG1110 Programming Assignment 2
 
 import java.math.BigDecimal; // used to round vars to 2 dec places x2
 import java.math.RoundingMode;
+import java.io.Serializable;
 
-public class Account
+public class Account implements Serializable
 {
     private double inv_rate; // investment rate as a % (0.29)
     private int num_wks; // number of weeks the investment stays invested
@@ -53,4 +54,5 @@ public class Account
 
     public void setNum_wks(int inputWeeks){ num_wks = inputWeeks;}
     public int getNum_wks(){return num_wks;}
+
 }
