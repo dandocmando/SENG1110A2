@@ -15,10 +15,13 @@ public class Account
     private int num_wks; // number of weeks the investment stays invested
     private double inv; // value of weekly contribution
 
-    public Account(){
-
-
+    public Account(double investmentRate, int numberOfWeeks, double investment){
+        this.inv_rate = investmentRate;
+        this.num_wks = numberOfWeeks;
+        this.inv = investment;
     }
+
+    public Account(){}
 
 
     public double calcInv(){

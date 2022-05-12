@@ -18,13 +18,15 @@ public class Client
     private double weeklyExpenses;
     private double ctx; // calculate tax
 
-    public Client(){
-
-    }
-    public Client(String name){
+    public Client(String name,double gross, boolean resident, double weekly){
         this.name = name;
+        this.grossSalary = gross;
+        this.resident = resident;
+        this.weeklyExpenses = weekly;
+
     }
 
+    public Client(){}
 
     public double calcTax() {  // calculates yearly tax
         if(resident) { // checks if user is a resident
