@@ -30,10 +30,6 @@ public class Account
         double t = 1; // if we wanted to calculate investment over multiple years this would be used
         int n = 52; // number of weeks in a year, I have used small var names to condense the FV line of code
 
-        //FA = inv*(1+(inv_rate/100)/numberOfWeeks)*Math.pow(51,1); // previous attempts at creating algo
-        //FA = Math.pow((1+inv_rate/12), 12)+(Math.pow((1+inv_rate/12), 12)-1)/(inv_rate/12);
-        //FA = ((Math.pow((1+(inv_rate/12)), 12)*inv-1) / (inv_rate/12)) + 5*Math.pow((1+(inv_rate/12)), 12);
-
         FV = inv*((Math.pow((1+inv_rate/n),(num_wks*t))-1)/(inv_rate/n))*(1+inv_rate/n);
         // a complicated (but far superior) way of finding the compound interest from
         // regular contributions. This one line was the hardest part of the assignment to create.
@@ -41,6 +37,9 @@ public class Account
         // also calculates assuming that the contribution is made at the start of each week.
 
         return new BigDecimal(FV).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+    }
+    public double calcContribution(){
+        return new BigDecimal(inv*num_wks).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
     public void setinv_Rate(double inputRate){ inv_rate = inputRate/100;}
@@ -55,12 +54,4 @@ public class Account
     public void setNum_wks(int inputWeeks){ num_wks = inputWeeks;}
     public int getNum_wks(){return num_wks;}
 
-    @Override
-    public String toString() {
-        return "Account{" +
-                "inv_rate=" + inv_rate +
-                ", num_wks=" + num_wks +
-                ", inv=" + inv +
-                '}';
-    }
 }

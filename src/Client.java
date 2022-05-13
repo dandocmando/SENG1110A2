@@ -7,7 +7,6 @@ SENG1110 Programming Assignment 2
  */
 import java.math.BigDecimal; // used to round vars to 2 dec places for weekly calc
 import java.math.RoundingMode;
-import java.util.Scanner;
 
 public class Client
 {
@@ -18,53 +17,35 @@ public class Client
     private double weeklyExpenses;
     private double ctx; // calculate tax
     private boolean clientUsed;
-    private int accountUsed;
-    private Account accountOne,accountTwo;
+    private int accUsed;
+    private Account[] acc;
 
 
 
 
-    public Client(String name, double gross, boolean resident, double weekly){
+    public Client(String name, double grossSalary, boolean resident, double weeklyExpenses){
         this.name = name;
-        this.grossSalary = gross;
+        this.grossSalary = grossSalary;
         this.resident = resident;
-        this.weeklyExpenses = weekly;
-        this.clientUsed = false;
-        this.accountUsed = 0;
-        this.accountOne = new Account();
-        this.accountTwo = new Account();
-
+        this.weeklyExpenses = weeklyExpenses;
+        clientUsed = false;
+        accUsed = 0;
+        acc = new Account[2];
     }
 
     public Client(){
-        this.name = "";
-        this.grossSalary = 0;
-        this.resident = false;
-        this.weeklyExpenses = 0;
-        this.clientUsed = false;
-        this.accountUsed = 0;
-        this.accountOne = new Account();
-        this.accountTwo = new Account();
-
+        name = "";
+        grossSalary = 0;
+        resident = false;
+        weeklyExpenses = 0;
+        clientUsed = false;
+        accUsed = 0;
+        acc = new Account[2];
     }
 
     public void createAccount(double investmentRate, int numberOfWeeks, double investment){
-        accountOne= new Account();
-        accountTwo= new Account();
-        if(accountUsed ==0){
-            createAccountData(accountOne,investmentRate,numberOfWeeks, investment);
-        }
-        else{
-            createAccountData(accountTwo,investmentRate,numberOfWeeks, investment);
-        }
-        accountUsed++;
-    }
-
-
-    public void createAccountData(Account account,double investmentRate, int numberOfWeeks, double investment){
-        account.setinv_Rate(investmentRate);
-        account.setNum_wks(numberOfWeeks);
-        account.setInv(investment);
+        acc[accUsed]= new Account(investmentRate,numberOfWeeks,investment);
+        accUsed++;
     }
 
 
@@ -141,17 +122,28 @@ public class Client
     public double getWeeklyExpenses(){ return weeklyExpenses;}
     public void setWeeklyExpenses(double inputExpenses){weeklyExpenses = inputExpenses;}
 
-    public Account getAccountOne(){return accountOne;}
-    public void setAccountOne(Account accountOne){this.accountOne = accountOne;}
-
-    public Account getAccountTwo(){return accountTwo;}
-    public void setAccountTwo(Account accountTwo){this.accountTwo = accountTwo;}
-
     public boolean getClientUsed() {
         return clientUsed;
     }
-
     public void setClientUsed(boolean clientUsed) {
         this.clientUsed = clientUsed;
     }
+
+
+    //These setters and getters allow me to access methods inside the acc Account objects
+    public double getCalcOne(){return acc[0].calcInv();}
+    public double getCalcTwo(){return acc[1].calcInv();}
+
+
+    public int getWksOne(){return acc[0].getNum_wks();}
+    public int getWksTwo(){return acc[1].getNum_wks();}
+
+    public double getInvOne(){return acc[0].getInv();}
+    public double getInvTwo(){return acc[1].getInv();}
+
+    public double getCalcContOne(){return acc[0].calcContribution();}
+    public double getCalcContTwo(){return acc[1].calcContribution();}
+
+    public double getRateOne(){return acc[0].getinvRate();}
+    public double getRateTwo(){return acc[1].getinvRate();}
 }
