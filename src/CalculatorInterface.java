@@ -10,7 +10,7 @@ import java.util.*;
 public class CalculatorInterface
 {
     private Client[] cli = new Client[5];
-    private int cliRM; // var used to determine how many clients are left, var is small because it is used everywhere
+    private int cliRM; // var used to determine how many clients remain (RM), name is small because it is used everywhere
 
     public CalculatorInterface(){
         for (int i=0;i<5;i++){ // loops 5 times
