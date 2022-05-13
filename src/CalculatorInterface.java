@@ -7,9 +7,19 @@ SENG1110 Programming Assignment 2
  */
 
 import java.util.*;
-
 public class CalculatorInterface
 {
+    private Client[] cli = new Client[5];
+    private int acc;
+
+    public CalculatorInterface(){
+        for (int i=0;i<5;i++){
+            cli[i] = new Client();
+        }
+
+    }
+
+
     public void run() {
         // This is the main function all data is displayed in
         Scanner console = new Scanner(System.in); // creates new Scanner object as console
@@ -17,7 +27,7 @@ public class CalculatorInterface
         Account account = new Account();
         System.out.print("Please enter your full name: ");
         String nameIn = console.nextLine();
-        nameIn = client.isNameAllowed(nameIn); // passes name back into nameIn
+        nameIn = isNameAllowed(nameIn); // passes name back into nameIn
 
         client.setName(nameIn); // assigns the String name var in the client object with name var defined by user
 
@@ -180,6 +190,7 @@ public class CalculatorInterface
          return inVar; // returns value modified or not
      }
 
+
     public int inputChecker_int(String input){
         // This function is the same as inputChecker_double, refer to that function for comments
         Scanner console = new Scanner(System.in);
@@ -201,6 +212,7 @@ public class CalculatorInterface
                 System.out.print("Enter an Integer: ");
                 in = console.next();
                 inVar = Integer.parseInt(in);
+
                 loop = false;
             }
             catch(NumberFormatException e){
@@ -209,54 +221,169 @@ public class CalculatorInterface
         }
         return inVar;
     }
-    public void menu(){
-        Scanner console = new Scanner(System.in); // creates new Scanner object as console
-        System.out.println("Menu:");
-        System.out.println("1. Add Client");
-        System.out.println("2. Delete Client");
-        System.out.println("3. Display Client");
-        System.out.print("Choice: ");
 
-        int menu_choice = console.nextInt();
-        switch (menu_choice) {
-            case 1 -> {
-                System.out.print("1");
-                addClient();
-            }
-            case 2 -> {
-                System.out.print("2");
-                delClient();
-            }
-            case 3 -> {
-                System.out.print("3");
-                dispClient();
+
+    public double belowZeroChecker_double(double numInput){
+        // This function checks if the user entered a number below zero and asks them to enter a number above 0
+        Scanner console = new Scanner(System.in);
+        boolean above_zero = false;
+        if(numInput <=0){ // checks if the value is already above 0, if so then the while below is bypassed
+            while(!above_zero){ // loops until loop is true
+                System.out.print("Please enter a number above 0: ");
+                numInput = inputChecker_double(console.next()); // takes input, passes through inputchecker first.
+                if(numInput > 0){ // this if statement checks if the new input is above 0
+                    above_zero = true; // stops loop
+                }
             }
         }
+        return numInput; // returns modified value
     }
+
+
+    public boolean bool_check(String boolInput){
+        // This function checks if the string input can be parsed into a boolean.
+        Scanner console = new Scanner(System.in);
+        boolean bool_allowed = false; // initialises variables (vars henceforth)
+        boolean resident = false;
+        while(!bool_allowed){ // loops until bool_allowed = true
+            if (boolInput.equalsIgnoreCase("true") || boolInput.equalsIgnoreCase("false")) {
+                // above if statement compares "true" & "false" to the user input in bool_check var
+                resident = Boolean.parseBoolean(boolInput); // if bool_check var is a bool, it will be converted
+                bool_allowed = true; // stops the loop
+            } else {
+                System.out.print("That's not a boolean, please enter a boolean: ");
+                boolInput = console.next(); // loops until user enters a legal input
+            }
+        }
+        return resident;
+    }
+
+
+    public String isNameAllowed(String nameIn){ // checks if the user has entered a first and last name
+        Scanner console = new Scanner(System.in);
+        String[] split_name = nameIn.split(" "); // splits input string into a String array
+
+        boolean name_allowed = false;
+        while(!name_allowed){ // loops until true
+            if(split_name.length != 2){ // if this is false user hasn't entered two names
+                System.out.print("Please enter a first and last name: ");
+                nameIn = console.nextLine();
+                split_name = nameIn.split(" ");
+            }
+            else{
+                name_allowed = true; // ends loop
+            }
+        }
+        return nameIn; // returns potentially modified nane.
+    }
+
+
+    public void menu(){
+        Scanner console = new Scanner(System.in); // creates new Scanner object as console
+
+        //Account account = new Account(0.3,52,300);
+        //System.out.println(cli[0].getName());
+        //cli[0].setAccountOne(account);
+        //cli[0].setAccountTwo(account);
+        //System.out.println(cli[0].getAccountOne().calcInv());
+        //System.out.println(cli[0].getAccountTwo().calcInv());
+
+        boolean endProgram = false;
+        while(!endProgram){
+            System.out.println("Menu:");
+            System.out.println("1. Add Client");
+            System.out.println("2. Delete Client");
+            System.out.println("3. Display Client");
+            System.out.println("0. End Program");
+            System.out.print("Choice: ");
+
+            int menu_choice = console.nextInt();
+            switch (menu_choice) {
+                case 1 -> {
+                    addClient();
+                }
+                case 2 -> {
+                    delClient();
+                }
+                case 3 -> {
+                    dispClient();
+                }
+                case 0->{
+                    endProgram = true;
+                }
+            }
+        }
+
+
+
+    }
+
 
     public void addClient(){
         Scanner console = new Scanner(System.in); // creates new Scanner object as console
-        Client client = new Client(); // creates the required objects from Client & Account classes
-        Account account = new Account();
-        OpenCSVReader openCsvReader = new OpenCSVReader();
-
+        boolean accountUsed = true;
+        while(accountUsed){
+            if(cli[acc].getClientUsed()){
+                acc++;
+            }
+            else{
+                accountUsed = false;
+            }
+        }
+        System.out.println(acc);
+        System.out.println(cli[acc].getClientUsed());
 
         System.out.print("Please enter your full name: ");
         String nameIn = console.nextLine();
-        nameIn = client.isNameAllowed(nameIn); // passes name back into nameIn
+        nameIn = isNameAllowed(nameIn); // passes name back into nameIn
+        cli[acc].setName(nameIn); // assigns the String name var in the client object with name var defined by user
+        System.out.print("Gross income: $");
+        double gross = belowZeroChecker_double(inputChecker_double(console.next())); // uses inputChecker method to verify if input is a double
+        cli[acc].setGross(gross);
 
+        System.out.print("Resident(Enter true or false): ");
+        boolean resident = bool_check(console.next());
+        cli[acc].setResident(resident); // assigns the resident bool var in client object with user true/false input
 
-        client.setName(nameIn); // assigns the String name var in the client object with name var defined by user
+        System.out.println("Weekly net Income: $"+cli[acc].calcWeeklyNet());
 
+        System.out.print("Enter your weekly expenses (Enter an average): $");
+        double weeklyExpenses = belowZeroChecker_double(inputChecker_double(console.next()));
 
-
+        boolean spendingAllowed = false; // initialises the loop bool
+        while(!spendingAllowed){ // loops until spendingAllowed = true
+            if(cli[acc].calcWeeklyNet() < weeklyExpenses){ // checks if expenses is higher than weekly net
+                System.out.println("You currently spend more than your net earnings per week, would you like to enter a new value?");
+                System.out.print("(Y or N): ");
+                String willCont = console.next();
+                if(willCont.equalsIgnoreCase("Y")){
+                    System.out.print("Please enter a new weekly expense value: $");
+                    double newSpending = inputChecker_double(console.next());
+                    while(newSpending <= 0){ // ensures user doesn't enter a new number that is negative
+                        System.out.print("Please enter a value above 0: $");
+                        newSpending = inputChecker_double(console.next());
+                    }
+                    weeklyExpenses = newSpending; // assigns new weekly expenses from newSpending input
+                }
+                else
+                    System.exit(0); // ends program
+            }
+            else
+                spendingAllowed = true; // ends the loop
+        }
+        cli[acc].setWeeklyExpenses(weeklyExpenses);
+        cli[acc].setClientUsed(true);
 
 
     }
+
+
     public void addAccount(){
 
     }
     public void delClient(){
+        //System.out.println(client.getAccountOne().calcInv());
+
 
     }
     public void delAccount(){
@@ -264,9 +391,16 @@ public class CalculatorInterface
     }
 
     public void dispClient(){
+        for(int i = 0;i<5;i++){
+            System.out.println(cli[i].getName());
+        }
+
+
+
 
     }
     public void dispAccount(){
+
 
     }
     public void dispAllClient(){
@@ -277,7 +411,6 @@ public class CalculatorInterface
     public static void main(String[] args)
     {
         CalculatorInterface calc = new CalculatorInterface(); // creates new CalculatorInterface object as calc
-        //calc.run(); // runs run function inside calc object
         calc.menu();
     }
 }

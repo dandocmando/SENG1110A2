@@ -15,6 +15,7 @@ public class Account
     private int num_wks; // number of weeks the investment stays invested
     private double inv; // value of weekly contribution
 
+
     public Account(double investmentRate, int numberOfWeeks, double investment){
         this.inv_rate = investmentRate;
         this.num_wks = numberOfWeeks;
@@ -53,4 +54,13 @@ public class Account
 
     public void setNum_wks(int inputWeeks){ num_wks = inputWeeks;}
     public int getNum_wks(){return num_wks;}
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "inv_rate=" + inv_rate +
+                ", num_wks=" + num_wks +
+                ", inv=" + inv +
+                '}';
+    }
 }

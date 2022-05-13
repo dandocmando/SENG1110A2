@@ -17,16 +17,56 @@ public class Client
     private double medicare;
     private double weeklyExpenses;
     private double ctx; // calculate tax
+    private boolean clientUsed;
+    private int accountUsed;
+    private Account accountOne,accountTwo;
 
-    public Client(String name,double gross, boolean resident, double weekly){
+
+
+
+    public Client(String name, double gross, boolean resident, double weekly){
         this.name = name;
         this.grossSalary = gross;
         this.resident = resident;
         this.weeklyExpenses = weekly;
+        this.clientUsed = false;
+        this.accountUsed = 0;
+        this.accountOne = new Account();
+        this.accountTwo = new Account();
 
     }
 
-    public Client(){}
+    public Client(){
+        this.name = "";
+        this.grossSalary = 0;
+        this.resident = false;
+        this.weeklyExpenses = 0;
+        this.clientUsed = false;
+        this.accountUsed = 0;
+        this.accountOne = new Account();
+        this.accountTwo = new Account();
+
+    }
+
+    public void createAccount(double investmentRate, int numberOfWeeks, double investment){
+        accountOne= new Account();
+        accountTwo= new Account();
+        if(accountUsed ==0){
+            createAccountData(accountOne,investmentRate,numberOfWeeks, investment);
+        }
+        else{
+            createAccountData(accountTwo,investmentRate,numberOfWeeks, investment);
+        }
+        accountUsed++;
+    }
+
+
+    public void createAccountData(Account account,double investmentRate, int numberOfWeeks, double investment){
+        account.setinv_Rate(investmentRate);
+        account.setNum_wks(numberOfWeeks);
+        account.setInv(investment);
+    }
+
 
     public double calcTax() {  // calculates yearly tax
         if(resident) { // checks if user is a resident
@@ -87,25 +127,6 @@ public class Client
         //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
     }
 
-    public String isNameAllowed(String nameIn){ // checks if the user has entered a first and last name
-        Scanner console = new Scanner(System.in);
-        String[] split_name = nameIn.split(" "); // splits input string into a String array
-
-        boolean name_allowed = false;
-        while(!name_allowed){ // loops until true
-            if(split_name.length != 2){ // if this is false user hasn't entered two names
-                System.out.print("Please enter a first and last name: ");
-                nameIn = console.nextLine();
-                split_name = nameIn.split(" ");
-            }
-            else{
-                name_allowed = true; // ends loop
-            }
-        }
-        return nameIn; // returns potentially modified nane.
-    }
-
-
 
     //Setter and Getter section
     public String getName(){ return (name);} //gets name, used in calcinfo
@@ -119,4 +140,18 @@ public class Client
 
     public double getWeeklyExpenses(){ return weeklyExpenses;}
     public void setWeeklyExpenses(double inputExpenses){weeklyExpenses = inputExpenses;}
+
+    public Account getAccountOne(){return accountOne;}
+    public void setAccountOne(Account accountOne){this.accountOne = accountOne;}
+
+    public Account getAccountTwo(){return accountTwo;}
+    public void setAccountTwo(Account accountTwo){this.accountTwo = accountTwo;}
+
+    public boolean getClientUsed() {
+        return clientUsed;
+    }
+
+    public void setClientUsed(boolean clientUsed) {
+        this.clientUsed = clientUsed;
+    }
 }
