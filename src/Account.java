@@ -17,9 +17,9 @@ public class Account
 
 
     public Account(double investmentRate, int numberOfWeeks, double investment){
-        this.inv_rate = investmentRate;
-        this.num_wks = numberOfWeeks;
-        this.inv = investment;
+        inv_rate = investmentRate;
+        num_wks = numberOfWeeks;
+        inv = investment;
     }
 
     public Account(){}
