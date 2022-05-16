@@ -17,10 +17,10 @@ public class CalculatorInterface
             cli[i] = new Client(); // creates 5 new cli Client objects
         }
         cli[0] = new Client("daniel ferguson",90000,true,200);
-        cli[1] = new Client("john nigga",45000,true,350);
+        cli[1] = new Client("john kok",45000,true,350);
         //cliRM=1;
         cli[0].setClientUsed(true);
-        //cli[1].setClientUsed(true);
+        cli[1].setClientUsed(true);
         //cli[2].setClientUsed(true);
         //cli[3].setClientUsed(true);
         //cli[4].setClientUsed(true);
@@ -141,7 +141,7 @@ public class CalculatorInterface
 
         System.out.print("Enter the investment rate as a %: ");
         double inv_rate = inputChecker_double(console.next());
-        account.setinv_Rate(inv_rate);
+        account.setInvRate(inv_rate);
 
         System.out.println("Would you like to invest for an entire year?");
         System.out.print("Enter Y or N: ");
@@ -424,20 +424,21 @@ public class CalculatorInterface
 
     public void addAccount() {
         Scanner console = new Scanner(System.in);
-        boolean allClientsUsed = false;
+        boolean allClientsUsed = true;
         for(Client client : cli){
-            if(!client.getClientUsed()){
-                allClientsUsed = true;
+            if (!client.getClientUsed()) {
+                allClientsUsed = false;
+                break;
             }
         }
         System.out.println(allClientsUsed);
-        //if(!cli[0].getClientUsed() && !cli[1].getClientUsed() && !cli[2].getClientUsed() && !cli[3].getClientUsed() && !cli[4].getClientUsed()){
-            //System.out.println("No clients currently exist, please add a client first.\n");
-        //}
+
         if(!allClientsUsed){
             System.out.println("Which client would you like to add an account to?");
             for(int i = 0; i<5; i++){ // runs through the list of available clients, don't type a name, enter the number.
-                System.out.println(i+1+". "+cli[i].getName()); // I have added 1 so selection starts at 1 not 0
+                if(cli[i].getClientUsed()){
+                    System.out.println(i+1+". "+cli[i].getName()); // I have added 1 so selection starts at 1 not 0
+                }
             }
             System.out.print("Choice (1,2,3 etc): ");
             int accAdd = belowZeroChecker_int(inputChecker_int(console.next()))-1; // selects the client ,-1 negates the above +1
@@ -489,7 +490,7 @@ public class CalculatorInterface
                 }
             }
             cli[accAdd].createAccount(inv_rate,num_wks,inv);
-            System.out.print(cli[accAdd].getCalcOne()+"\n");
+            System.out.print(cli[accAdd].getCalcInv(0)+"\n");
         }
         else{
             System.out.println("No clients currently exist, please add a client first.\n");
@@ -514,8 +515,33 @@ public class CalculatorInterface
     }
 
 
-    public void delAccount(){
+    public void delAccount() {
+        Scanner console = new Scanner(System.in);
 
+        System.out.println("Which clients account would you like to delete?");
+        for (int i = 0; i < 5; i++) {
+            if (cli[i].getClientUsed()) {
+                System.out.println(i + 1 + ". " + cli[i].getName());
+            }
+        }
+        System.out.print("Choice (1,2,3 etc): ");
+        int accNum = belowZeroChecker_int(inputChecker_int(console.next())) - 1;
+
+        System.out.println("Which account would you like to delete?");
+        if (cli[accNum].getAccUsed() == 0) {
+            System.out.println("no accounts");
+        } else if ((cli[accNum].getAccUsed() <= 1)) {
+            System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
+            if (cli[accNum].getAccUsed() == 2) {
+                System.out.println("2. Account Two, investment: $" + cli[accNum].getCalcInv(1));
+            }
+
+            System.out.print("Choice: ");
+            int accDel = belowZeroChecker_int(inputChecker_int(console.next()));
+
+
+
+        }
     }
 
     public void disClient(){
@@ -548,36 +574,66 @@ public class CalculatorInterface
 
         System.out.println("Medicare Levy Per Year: $" + cli[view].calcMedicare()+"\n");
         try{
-            cli[view].getCalcOne(); // if the account doesn't exist this will gen an error and the catch msg will display
+            cli[view].getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
             System.out.println("Investment Account One:"); // this will be displayed if the account exists
-            System.out.println("Contributed: $"+cli[view].getCalcContOne()+" over "+cli[view].getWksOne()+" weeks at "+cli[view].getRateOne()*100+"% interest.");
-            System.out.println("Current balance: $"+ cli[view].getCalcOne()+"\n");
+            System.out.println("Contributed: $"+cli[view].getCalcContOne()+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRateOne()*100+"% interest.");
+            System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
         } catch (NullPointerException e) { // this is the exception created by the first try line
             System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
         }
 
         try{
-            cli[view].getCalcTwo();
+            cli[view].getCalcInv(1);
             System.out.println("Investment results Account Two:");
-            System.out.println("Contributed: $"+cli[view].getCalcContTwo()+" over "+cli[view].getWksTwo()+" weeks.");
-            System.out.println("Current balance: $"+ cli[view].getCalcTwo()+"\n");
+            System.out.println("Contributed: $" + cli[view].getCalcContTwo() + " over " + cli[view].getWksTwo() + " weeks at " + cli[view].getRateTwo() * 100 + "% interest.");
+            System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
         } catch(NullPointerException e){
             System.out.println("Account Two: Does not exist.");
         }
         System.out.println("------------------------------------------------------------");
         System.out.print("\n");
-
-
-
-
-
-
-
     }
+
+
     public void disAccount(){
+        Scanner console = new Scanner(System.in);
+        System.out.println("Which clients account would you like to view?");
+        for (int i = 0; i < 5;i++ ) {
+            if(cli[i].getClientUsed()){
+                System.out.println(i+1 + ". " + cli[i].getName());
+            }
+        }
+        System.out.print("Choice (1,2,3 etc): ");
+        int view = belowZeroChecker_int(inputChecker_int(console.next()))-1; // selects the client ,-1 negates the above +1
+        System.out.println(view);
+        System.out.println("Client: "+cli[view].getName()+"\n");
+
+
+        try{
+            cli[view].getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
+            System.out.println("Investment Account One:"); // this will be displayed if the account exists
+            System.out.println("Contributed: $"+cli[view].getCalcContOne()+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRateOne()*100+"% interest.");
+            System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
+        } catch (NullPointerException e) { // this is the exception created by the first try line
+            System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
+        }
+
+        try{
+            cli[view].getCalcInv(1);
+            System.out.println("Investment results Account Two:");
+            System.out.println("Contributed: $" + cli[view].getCalcContTwo() + " over " + cli[view].getWksTwo() + " weeks at " + cli[view].getRateTwo() * 100 + "% interest.");
+            System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
+        } catch(NullPointerException e){
+            System.out.println("Account Two: Does not exist.");
+        }
+
+
+
 
 
     }
+
+
     public void disAllClient(){
         for (Client client : cli) { // loops through the cli array of Client objects
             if (client.getClientUsed()) { // if ClientUsed is false then object cli[i] won't be printed.
@@ -599,19 +655,19 @@ public class CalculatorInterface
 
                 System.out.println("Medicare Levy Per Year: $" + client.calcMedicare() + "\n");
                 try {
-                    client.getCalcOne(); // if the account doesn't exist this will gen an error and the catch msg will display
+                    client.getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
                     System.out.println("Investment Account One:"); // this will be displayed if the account exists
-                    System.out.println("Contributed: $" + client.getCalcContOne() + " over " + client.getWksOne() + " weeks at " + client.getRateOne() * 100 + "% interest.");
-                    System.out.println("Current balance: $" + client.getCalcOne() + "\n");
+                    System.out.println("Contributed: $" + client.getCalcContOne() + " over " + client.getWks(0) + " weeks at " + client.getRateOne() * 100 + "% interest.");
+                    System.out.println("Current balance: $" + client.getCalcInv(0) + "\n");
                 } catch (NullPointerException e) { // this is the exception created by the first try line
                     System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
                 }
 
                 try {
-                    client.getCalcTwo();
+                    client.getCalcInv(1);
                     System.out.println("Investment results Account Two:");
-                    System.out.println("Contributed: $" + client.getCalcContTwo() + " over " + client.getWksTwo() + " weeks.");
-                    System.out.println("Current balance: $" + client.getCalcTwo() + "\n");
+                    System.out.println("Contributed: $" + client.getCalcContTwo() + " over " + client.getWksTwo() + " weeks at " + client.getRateTwo() * 100 + "% interest.");
+                    System.out.println("Current balance: $" + client.getCalcInv(1) + "\n");
                 } catch (NullPointerException e) {
                     System.out.println("Account Two: Does not exist.");
                 }

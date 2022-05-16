@@ -42,8 +42,8 @@ public class Account
         return new BigDecimal(inv*num_wks).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
-    public void setinv_Rate(double inputRate){ inv_rate = inputRate/100;}
-    public double getinvRate()
+    public void setInvRate(double inputRate){ inv_rate = inputRate/100;}
+    public double getInvRate()
     {
         return(inv_rate);
     }

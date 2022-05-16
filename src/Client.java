@@ -21,8 +21,6 @@ public class Client
     private Account[] acc;
 
 
-
-
     public Client(String name, double grossSalary, boolean resident, double weeklyExpenses){
         this.name = name;
         this.grossSalary = grossSalary;
@@ -42,6 +40,7 @@ public class Client
         accUsed = 0;
         acc = new Account[2];
     }
+
 
     public void createAccount(double investmentRate, int numberOfWeeks, double investment){
         acc[accUsed]= new Account(investmentRate,numberOfWeeks,investment);
@@ -104,8 +103,12 @@ public class Client
 
     public double calcPossibleInvestment(){ double weeklyNet = calcWeeklyNet();
         // BigDecimal is only used to round -> safe to swap back to double
-        return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
-        //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
+        if(getAccUsed()==0){ // this won't deduct the getInvOne as account one doesn't exist yet
+            return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+        }
+        else{ // this deducts account one investment from the possible investment for account two
+            return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)-getInvOne()).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+        }        //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
     }
 
 
@@ -122,20 +125,24 @@ public class Client
     public double getWeeklyExpenses(){ return weeklyExpenses;}
     public void setWeeklyExpenses(double inputExpenses){weeklyExpenses = inputExpenses;}
 
-    public boolean getClientUsed() {
-        return clientUsed;
-    }
-    public void setClientUsed(boolean clientUsed) {
-        this.clientUsed = clientUsed;
-    }
+    public boolean getClientUsed(){return clientUsed;}
+    public void setClientUsed(boolean clientUsed){this.clientUsed = clientUsed;}
+
+    public int getAccUsed(){return accUsed;}
 
 
     //These setters and getters allow me to access methods inside the acc Account objects
-    public double getCalcOne(){return acc[0].calcInv();}
-    public double getCalcTwo(){return acc[1].calcInv();}
+    public double getCalcInv(int num){
+        if(num==0){return acc[0].calcInv();}
+        else{return acc[1].calcInv();}
+    }
 
 
-    public int getWksOne(){return acc[0].getNum_wks();}
+    public int getWks(int num){
+        if(num==0){return acc[0].getNum_wks();}
+        else{return acc[1].getNum_wks();}
+    }
+
     public int getWksTwo(){return acc[1].getNum_wks();}
 
     public double getInvOne(){return acc[0].getInv();}
@@ -144,6 +151,6 @@ public class Client
     public double getCalcContOne(){return acc[0].calcContribution();}
     public double getCalcContTwo(){return acc[1].calcContribution();}
 
-    public double getRateOne(){return acc[0].getinvRate();}
-    public double getRateTwo(){return acc[1].getinvRate();}
+    public double getRateOne(){return acc[0].getInvRate();}
+    public double getRateTwo(){return acc[1].getInvRate();}
 }
