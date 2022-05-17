@@ -18,6 +18,9 @@ public class CalculatorInterface
         }
         cli[0] = new Client("daniel ferguson",90000,true,200);
         cli[1] = new Client("john kok",45000,true,350);
+        cli[0].createAccount(0.2,52,400);
+        cli[0].createAccount(0.2,52,200);
+        //cli[1] = null;
         //cliRM=1;
         cli[0].setClientUsed(true);
         cli[1].setClientUsed(true);
@@ -509,7 +512,8 @@ public class CalculatorInterface
         System.out.print("Choice (1,2,3 etc): ");
         int cliDel = belowZeroChecker_int(inputChecker_int(console.next()))-1;
         String tempName = cli[cliDel].getName();
-        cli[cliDel].setClientUsed(false);
+        //cli[cliDel].setClientUsed(false);
+        cli[cliDel] = new Client();
         clientShuffle();
         System.out.println("Client " + tempName + " deleted\n");
     }
@@ -520,28 +524,36 @@ public class CalculatorInterface
 
         System.out.println("Which clients account would you like to delete?");
         for (int i = 0; i < 5; i++) {
-            if (cli[i].getClientUsed()) {
-                System.out.println(i + 1 + ". " + cli[i].getName());
+            if(cli[i].getClientUsed()){
+                System.out.println(i+1+". "+cli[i].getName());
             }
         }
+
         System.out.print("Choice (1,2,3 etc): ");
         int accNum = belowZeroChecker_int(inputChecker_int(console.next())) - 1;
 
         System.out.println("Which account would you like to delete?");
         if (cli[accNum].getAccUsed() == 0) {
-            System.out.println("no accounts");
-        } else if ((cli[accNum].getAccUsed() <= 1)) {
-            System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
+            System.out.println("No accounts created for this client, create an account first.");
+        }
+        if(cli[accNum].getAccUsed()>0){
+            if ((cli[accNum].getAccUsed() == 1)) {
+                System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
+            }
             if (cli[accNum].getAccUsed() == 2) {
+                System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
                 System.out.println("2. Account Two, investment: $" + cli[accNum].getCalcInv(1));
             }
-
             System.out.print("Choice: ");
-            int accDel = belowZeroChecker_int(inputChecker_int(console.next()));
-
-
+            int accDel = belowZeroChecker_int(inputChecker_int(console.next()))-1;
+            System.out.println(accDel);
+            cli[accNum].deleteAccount(accDel);
 
         }
+
+
+
+
     }
 
     public void disClient(){
@@ -576,7 +588,7 @@ public class CalculatorInterface
         try{
             cli[view].getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
             System.out.println("Investment Account One:"); // this will be displayed if the account exists
-            System.out.println("Contributed: $"+cli[view].getCalcContOne()+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRateOne()*100+"% interest.");
+            System.out.println("Contributed: $"+cli[view].getCalcCont(0)+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRate(0)*100+"% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
         } catch (NullPointerException e) { // this is the exception created by the first try line
             System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
@@ -585,7 +597,7 @@ public class CalculatorInterface
         try{
             cli[view].getCalcInv(1);
             System.out.println("Investment results Account Two:");
-            System.out.println("Contributed: $" + cli[view].getCalcContTwo() + " over " + cli[view].getWksTwo() + " weeks at " + cli[view].getRateTwo() * 100 + "% interest.");
+            System.out.println("Contributed: $" + cli[view].getCalcCont(1) + " over " + cli[view].getWks(1) + " weeks at " + cli[view].getRate(1) * 100 + "% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
         } catch(NullPointerException e){
             System.out.println("Account Two: Does not exist.");
@@ -612,7 +624,7 @@ public class CalculatorInterface
         try{
             cli[view].getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
             System.out.println("Investment Account One:"); // this will be displayed if the account exists
-            System.out.println("Contributed: $"+cli[view].getCalcContOne()+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRateOne()*100+"% interest.");
+            System.out.println("Contributed: $"+cli[view].getCalcCont(0)+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRate(0)*100+"% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
         } catch (NullPointerException e) { // this is the exception created by the first try line
             System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
@@ -621,16 +633,11 @@ public class CalculatorInterface
         try{
             cli[view].getCalcInv(1);
             System.out.println("Investment results Account Two:");
-            System.out.println("Contributed: $" + cli[view].getCalcContTwo() + " over " + cli[view].getWksTwo() + " weeks at " + cli[view].getRateTwo() * 100 + "% interest.");
+            System.out.println("Contributed: $" + cli[view].getCalcCont(1) + " over " + cli[view].getWks(1) + " weeks at " + cli[view].getRate(1) * 100 + "% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
         } catch(NullPointerException e){
             System.out.println("Account Two: Does not exist.");
         }
-
-
-
-
-
     }
 
 
@@ -657,22 +664,21 @@ public class CalculatorInterface
                 try {
                     client.getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
                     System.out.println("Investment Account One:"); // this will be displayed if the account exists
-                    System.out.println("Contributed: $" + client.getCalcContOne() + " over " + client.getWks(0) + " weeks at " + client.getRateOne() * 100 + "% interest.");
+                    System.out.println("Contributed: $" + client.getCalcCont(0) + " over " + client.getWks(0) + " weeks at " + client.getRate(0) * 100 + "% interest.");
                     System.out.println("Current balance: $" + client.getCalcInv(0) + "\n");
-                } catch (NullPointerException e) { // this is the exception created by the first try line
+                } catch (Exception e) { // this is the exception created by the first try line
                     System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
                 }
 
                 try {
                     client.getCalcInv(1);
                     System.out.println("Investment results Account Two:");
-                    System.out.println("Contributed: $" + client.getCalcContTwo() + " over " + client.getWksTwo() + " weeks at " + client.getRateTwo() * 100 + "% interest.");
+                    System.out.println("Contributed: $" + client.getCalcCont(1) + " over " + client.getWks(1) + " weeks at " + client.getRate(1) * 100 + "% interest.");
                     System.out.println("Current balance: $" + client.getCalcInv(1) + "\n");
-                } catch (NullPointerException e) {
+                } catch (Exception e) {
                     System.out.println("Account Two: Does not exist.");
                 }
                 System.out.println("------------------------------------------------------------");
-                //System.out.println("\n");
             }
         }
         System.out.print("\n");
@@ -690,6 +696,11 @@ public class CalculatorInterface
             }
         }
         //cliRM--;
+    }
+
+    public void clientSort(){
+        //cli.sort
+
     }
 
 

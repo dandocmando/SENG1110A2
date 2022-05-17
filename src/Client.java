@@ -46,6 +46,10 @@ public class Client
         acc[accUsed]= new Account(investmentRate,numberOfWeeks,investment);
         accUsed++;
     }
+    public void deleteAccount(int accountToDelete){
+        acc[accountToDelete] = new Account(0,0,0);
+        accUsed--;
+    }
 
 
     public double calcTax() {  // calculates yearly tax
@@ -107,7 +111,7 @@ public class Client
             return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
         }
         else{ // this deducts account one investment from the possible investment for account two
-            return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)-getInvOne()).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+            return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)-getInv(0)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
         }        //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
     }
 
@@ -137,20 +141,23 @@ public class Client
         else{return acc[1].calcInv();}
     }
 
-
     public int getWks(int num){
         if(num==0){return acc[0].getNum_wks();}
         else{return acc[1].getNum_wks();}
     }
 
-    public int getWksTwo(){return acc[1].getNum_wks();}
+    public double getInv(int num){
+        if(num==0){return acc[0].getInv();}
+        else{return acc[1].getInv();}
+    }
 
-    public double getInvOne(){return acc[0].getInv();}
-    public double getInvTwo(){return acc[1].getInv();}
+    public double getCalcCont(int num){
+        if(num==0){return acc[0].calcContribution();}
+        else{return acc[1].calcContribution();}
+    }
 
-    public double getCalcContOne(){return acc[0].calcContribution();}
-    public double getCalcContTwo(){return acc[1].calcContribution();}
-
-    public double getRateOne(){return acc[0].getInvRate();}
-    public double getRateTwo(){return acc[1].getInvRate();}
+    public double getRate(int num){
+        if (num == 0) {return acc[0].getInvRate();}
+        else{return acc[1].getInvRate();}
+    }
 }
