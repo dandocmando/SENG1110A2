@@ -17,7 +17,7 @@ public class Client
     private double weeklyExpenses;
     private double ctx; // calculate tax
     private boolean clientUsed;
-    private int accUsed;
+    private int numOfAccUsed;
     private Account[] acc;
 
 
@@ -27,7 +27,7 @@ public class Client
         this.resident = resident;
         this.weeklyExpenses = weeklyExpenses;
         clientUsed = false;
-        accUsed = 0;
+        numOfAccUsed = 0;
         acc = new Account[2];
     }
 
@@ -37,18 +37,32 @@ public class Client
         resident = false;
         weeklyExpenses = 0;
         clientUsed = false;
-        accUsed = 0;
+        numOfAccUsed = 0;
         acc = new Account[2];
     }
 
-
+    //create and delete methods for Account class
     public void createAccount(double investmentRate, int numberOfWeeks, double investment){
-        acc[accUsed]= new Account(investmentRate,numberOfWeeks,investment);
-        accUsed++;
+        acc[numOfAccUsed]= new Account(investmentRate,numberOfWeeks,investment,true);
+        numOfAccUsed++; // this is used to determine the number of accounts used
     }
     public void deleteAccount(int accountToDelete){
-        acc[accountToDelete] = new Account(0,0,0);
-        accUsed--;
+        acc[accountToDelete] = new Account(0,0,0,false);
+        numOfAccUsed--;
+    }
+
+
+    public void accountShuffle(){ // this is a duplicate of clientShuffle
+        int index = 0; // used to move acc[1] to acc[0] if acc[1] is deleted
+        System.out.println(getNumOfAccUsed());
+        for(int i = 0; i<acc.length; i++){ //refer to clientShuffle for comments
+            if(getAccUsed(i)){
+                Account temp = acc[index];
+                acc[index] = acc[i];
+                acc[i] = temp;
+                index++;
+            }
+        }
     }
 
 
@@ -107,13 +121,15 @@ public class Client
 
     public double calcPossibleInvestment(){ double weeklyNet = calcWeeklyNet();
         // BigDecimal is only used to round -> safe to swap back to double
-        if(getAccUsed()==0){ // this won't deduct the getInvOne as account one doesn't exist yet
+        if(getNumOfAccUsed()==0){ // this won't deduct the getInvOne as account one doesn't exist yet
             return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
         }
         else{ // this deducts account one investment from the possible investment for account two
             return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)-getInv(0)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
         }        //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
     }
+
+
 
 
     //Setter and Getter section
@@ -132,13 +148,13 @@ public class Client
     public boolean getClientUsed(){return clientUsed;}
     public void setClientUsed(boolean clientUsed){this.clientUsed = clientUsed;}
 
-    public int getAccUsed(){return accUsed;}
+    public int getNumOfAccUsed(){return numOfAccUsed;}
 
 
     //These setters and getters allow me to access methods inside the acc Account objects
-    public double getCalcInv(int num){
-        if(num==0){return acc[0].calcInv();}
-        else{return acc[1].calcInv();}
+    public double getCalcInv(int num){  // used to access Account methods inside CalculatorInterface
+        if(num==0){return acc[0].calcInv();} // returns acc[0] calcInv method
+        else{return acc[1].calcInv();} // returns acc[1] calcInv method
     }
 
     public int getWks(int num){
@@ -157,7 +173,22 @@ public class Client
     }
 
     public double getRate(int num){
-        if (num == 0) {return acc[0].getInvRate();}
+        if (num == 0){return acc[0].getInvRate();}
         else{return acc[1].getInvRate();}
     }
+
+    public boolean getAccUsed(int num) {
+        if (num == 0) {return acc[0].getAccUsed();}
+        else{return acc[1].getAccUsed();}
+    }
+
+    public void setAccUsed(boolean setValue, int num) {
+        if (num == 0) {acc[num].setAccUsed(setValue);}
+        if(num == 1){acc[num].setAccUsed(setValue);}
+    }
+
+    //public static int compareArray(Client cliA, Client cliB){ // used by CalculatorInterface to compare client objects
+        //return cliA.getName().compareTo(cliB.getName());  //sorts client objects according to getName and returns them
+        // in alphabetical order
+    //} // removed due to complexity and only simple is allowed in assessment
 }

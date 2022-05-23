@@ -7,6 +7,8 @@ SENG1110 Programming Assignment 2
  */
 
 import java.util.*;
+import java.util.Arrays;
+
 public class CalculatorInterface
 {
     private Client[] cli = new Client[5];
@@ -18,8 +20,8 @@ public class CalculatorInterface
         }
         cli[0] = new Client("daniel ferguson",90000,true,200);
         cli[1] = new Client("john kok",45000,true,350);
-        cli[0].createAccount(0.2,52,400);
-        cli[0].createAccount(0.2,52,200);
+        //cli[0].createAccount(0.2,52,400);
+        //cli[0].createAccount(0.2,52,200);
         //cli[1] = null;
         //cliRM=1;
         cli[0].setClientUsed(true);
@@ -533,14 +535,14 @@ public class CalculatorInterface
         int accNum = belowZeroChecker_int(inputChecker_int(console.next())) - 1;
 
         System.out.println("Which account would you like to delete?");
-        if (cli[accNum].getAccUsed() == 0) {
+        if (cli[accNum].getNumOfAccUsed() == 0) {
             System.out.println("No accounts created for this client, create an account first.");
         }
-        if(cli[accNum].getAccUsed()>0){
-            if ((cli[accNum].getAccUsed() == 1)) {
+        if(cli[accNum].getNumOfAccUsed()>0){
+            if ((cli[accNum].getNumOfAccUsed() == 1)) {
                 System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
             }
-            if (cli[accNum].getAccUsed() == 2) {
+            if (cli[accNum].getNumOfAccUsed() == 2) {
                 System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
                 System.out.println("2. Account Two, investment: $" + cli[accNum].getCalcInv(1));
             }
@@ -548,6 +550,8 @@ public class CalculatorInterface
             int accDel = belowZeroChecker_int(inputChecker_int(console.next()))-1;
             System.out.println(accDel);
             cli[accNum].deleteAccount(accDel);
+            cli[accNum].accountShuffle();
+            cli[accNum].setAccUsed(false, accNum);
 
         }
 
@@ -590,8 +594,8 @@ public class CalculatorInterface
             System.out.println("Investment Account One:"); // this will be displayed if the account exists
             System.out.println("Contributed: $"+cli[view].getCalcCont(0)+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRate(0)*100+"% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
-        } catch (NullPointerException e) { // this is the exception created by the first try line
-            System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
+        } catch (Exception e) { // this is the exception created by the first try line
+            System.out.println("Account One: Does not exist.\n"); // informs user that the account doesn't exist
         }
 
         try{
@@ -599,7 +603,7 @@ public class CalculatorInterface
             System.out.println("Investment results Account Two:");
             System.out.println("Contributed: $" + cli[view].getCalcCont(1) + " over " + cli[view].getWks(1) + " weeks at " + cli[view].getRate(1) * 100 + "% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
-        } catch(NullPointerException e){
+        } catch(Exception e){
             System.out.println("Account Two: Does not exist.");
         }
         System.out.println("------------------------------------------------------------");
@@ -626,8 +630,8 @@ public class CalculatorInterface
             System.out.println("Investment Account One:"); // this will be displayed if the account exists
             System.out.println("Contributed: $"+cli[view].getCalcCont(0)+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRate(0)*100+"% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
-        } catch (NullPointerException e) { // this is the exception created by the first try line
-            System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
+        } catch (Exception e) { // this is the exception created by the first try line
+            System.out.println("Account One: Does not exist.\n"); // informs user that the account doesn't exist
         }
 
         try{
@@ -635,13 +639,14 @@ public class CalculatorInterface
             System.out.println("Investment results Account Two:");
             System.out.println("Contributed: $" + cli[view].getCalcCont(1) + " over " + cli[view].getWks(1) + " weeks at " + cli[view].getRate(1) * 100 + "% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
-        } catch(NullPointerException e){
+        } catch(Exception e){
             System.out.println("Account Two: Does not exist.");
         }
     }
 
 
     public void disAllClient(){
+        clientSort();
         for (Client client : cli) { // loops through the cli array of Client objects
             if (client.getClientUsed()) { // if ClientUsed is false then object cli[i] won't be printed.
                 //Prints out all user tax and salary values, shows pre-tax & post tax salary, plus tax applied & medicare levy
@@ -667,7 +672,7 @@ public class CalculatorInterface
                     System.out.println("Contributed: $" + client.getCalcCont(0) + " over " + client.getWks(0) + " weeks at " + client.getRate(0) * 100 + "% interest.");
                     System.out.println("Current balance: $" + client.getCalcInv(0) + "\n");
                 } catch (Exception e) { // this is the exception created by the first try line
-                    System.out.println("Account One: Does not exist."); // informs user that the account doesn't exist
+                    System.out.println("Account One: Does not exist.\n"); // informs user that the account doesn't exist
                 }
 
                 try {
@@ -685,23 +690,42 @@ public class CalculatorInterface
     }
 
 
-    public void clientShuffle(){
+    public void clientShuffle(){ // shuffles the array of Client objects cli, this is used when a client is deleted
         int index = 0;
-        for(int i=0;i<cli.length;i++){
-            if(cli[i].getClientUsed()){
-                Client temp = cli[index];
+        for(int i=0;i<cli.length;i++){ // loops for the length of cli
+            if(cli[i].getClientUsed()){ // this is a var used in cli to declare if the cli object is used
+                Client temp = cli[index]; // simple sorting array which moves all the used cli objects in the array to the front
                 cli[index] = cli[i];
                 cli[i]= temp;
                 index++;
             }
         }
-        //cliRM--;
     }
 
-    public void clientSort(){
-        //cli.sort
+
+    public void clientSort(){ // sorts the array of Client objects cli into alphabetical order
+        //Arrays.sort(cli, Client::compareArray); // uses compareArray method in Client class to
+        // compare all cli objects in calc object // removed due to complexity
+
+        int i;
+        int j;
+        int index;
+        Client temp = new Client();
+        String cliA;
+        String cliB;
+        for(i=0;i<cli.length;i++){
+            index = i;
+
+            for(j = i+1;j<cli.length;j++){
+                //cliA = cli[index]
+            }
+
+        }
+
 
     }
+
+
 
 
     public void fileSave(){

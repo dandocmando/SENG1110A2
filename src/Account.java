@@ -14,12 +14,15 @@ public class Account
     private double inv_rate; // investment rate as a % (0.29)
     private int num_wks; // number of weeks the investment stays invested
     private double inv; // value of weekly contribution
+    private boolean accUsed;
 
 
-    public Account(double investmentRate, int numberOfWeeks, double investment){
+    public Account(double investmentRate, int numberOfWeeks, double investment, boolean accUsed){
         inv_rate = investmentRate;
         num_wks = numberOfWeeks;
         inv = investment;
+        this.accUsed = accUsed;
+
     }
 
     public Account(){}
@@ -53,5 +56,9 @@ public class Account
 
     public void setNum_wks(int inputWeeks){ num_wks = inputWeeks;}
     public int getNum_wks(){return num_wks;}
+
+    public void setAccUsed(boolean inputUsed){accUsed = inputUsed;}
+    public boolean getAccUsed(){return accUsed;}
+
 
 }
