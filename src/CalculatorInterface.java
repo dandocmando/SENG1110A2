@@ -7,7 +7,6 @@ SENG1110 Programming Assignment 2
  */
 
 import java.util.*;
-import java.util.Arrays;
 
 public class CalculatorInterface
 {
@@ -20,15 +19,21 @@ public class CalculatorInterface
         }
         cli[0] = new Client("daniel ferguson",90000,true,200);
         cli[1] = new Client("john kok",45000,true,350);
-        //cli[0].createAccount(0.2,52,400);
+        cli[2] = new Client("zzz pppp",45000,true,350);
+        cli[3] = new Client("aaa ddd",45000,true,350);
+        cli[4] = new Client("abb ddd",45000,true,350);
+        //cli[5] = new Client("bbb ddd",45000,true,350);
+
+        //cli[2].createAccount(0.2,52,400);
         //cli[0].createAccount(0.2,52,200);
         //cli[1] = null;
         //cliRM=1;
         cli[0].setClientUsed(true);
         cli[1].setClientUsed(true);
-        //cli[2].setClientUsed(true);
-        //cli[3].setClientUsed(true);
-        //cli[4].setClientUsed(true);
+        cli[2].setClientUsed(true);
+        cli[3].setClientUsed(true);
+        cli[4].setClientUsed(true);
+        //cli[5].setClientUsed(true);
 
 
     }
@@ -707,22 +712,20 @@ public class CalculatorInterface
         //Arrays.sort(cli, Client::compareArray); // uses compareArray method in Client class to
         // compare all cli objects in calc object // removed due to complexity
 
-        int i;
-        int j;
-        int index;
-        Client temp = new Client();
-        String cliA;
-        String cliB;
-        for(i=0;i<cli.length;i++){
-            index = i;
-
-            for(j = i+1;j<cli.length;j++){
-                //cliA = cli[index]
+        // simple Client sort
+        for(int i=0;i<cli.length-1;i++){ // loops for the length of cli -1
+            for(int j=0;j<cli.length;j++){ // loops for the length of cli
+                if(cli[i].getName().compareToIgnoreCase(cli[j].getName()) < 0){ // compares the name of cli[i] and cli[j]
+                    // if the result of the above if statement is < 0, that means cli[i] is closer to the start of the
+                    // alphabet compared to cli[j] (cli[i] is lexicographically first)
+                    Client temp; // creates a Client object temp
+                    temp = cli[i]; // this process swaps cli[i] and cli[j]. This will in effect will repeat until the
+                    // entire cli array is sorted in correct alphabetical order.
+                    cli[i] = cli[j];
+                    cli[j]=temp;
+                }
             }
-
         }
-
-
     }
 
 
