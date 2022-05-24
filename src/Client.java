@@ -52,6 +52,8 @@ public class Client
     }
 
 
+
+
     public void accountShuffle(){ // this is a duplicate of clientShuffle
         int index = 0; // used to move acc[1] to acc[0] if acc[1] is deleted
         System.out.println(getNumOfAccUsed());
@@ -162,6 +164,15 @@ public class Client
         else{return acc[1].getNum_wks();}
     }
 
+    public void setWks(int num_wks,int num){
+        if(num==0){
+            acc[0].setNum_wks(num_wks);
+        }
+        else{
+            acc[1].setNum_wks(num_wks);
+        }
+    }
+
     public double getInv(int num){
         if(num==0){return acc[0].getInv();}
         else{return acc[1].getInv();}
@@ -187,8 +198,5 @@ public class Client
         if(num == 1){acc[num].setAccUsed(setValue);}
     }
 
-    //public static int compareArray(Client cliA, Client cliB){ // used by CalculatorInterface to compare client objects
-        //return cliA.getName().compareTo(cliB.getName());  //sorts client objects according to getName and returns them
-        // in alphabetical order
-    //} // removed due to complexity and only simple is allowed in assessment
+
 }

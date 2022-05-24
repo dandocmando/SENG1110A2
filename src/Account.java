@@ -33,7 +33,7 @@ public class Account
         double t = 1; // if we wanted to calculate investment over multiple years this would be used
         int n = 52; // number of weeks in a year, I have used small var names to condense the FV line of code
 
-        FV = inv*((Math.pow((1+inv_rate/n),(num_wks*t))-1)/(inv_rate/n))*(1+inv_rate/n);
+        FV = inv*((Math.pow((1+inv_rate/n),(num_wks*t))-1)/(inv_rate/n));//*(1+inv_rate/n);
         // a complicated (but far superior) way of finding the compound interest from
         // regular contributions. This one line was the hardest part of the assignment to create.
         // this formula compounds weekly and can calculate the value from 1 to 52 weeks, years can be easily implemented.
