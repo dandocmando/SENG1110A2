@@ -7,10 +7,14 @@ SENG1110 Programming Assignment 2
  */
 import java.math.BigDecimal; // used to round vars to 2 dec places for weekly calc
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Client
 {
     private String name; // all instance variables have been set to private as requested
+    private String accA = "No Account";
+    private String accB = "No Account";
     private double grossSalary;
     private boolean resident;
     private double medicare;
@@ -165,12 +169,8 @@ public class Client
     }
 
     public void setWks(int num_wks,int num){
-        if(num==0){
-            acc[0].setNum_wks(num_wks);
-        }
-        else{
-            acc[1].setNum_wks(num_wks);
-        }
+        if(num==0){acc[0].setNum_wks(num_wks);}
+        else{acc[1].setNum_wks(num_wks);}
     }
 
     public double getInv(int num){
@@ -198,5 +198,35 @@ public class Client
         if(num == 1){acc[num].setAccUsed(setValue);}
     }
 
+    public void toStringPrep() {
+        accA = "No Account";
+        accB = "No Account";
+        try{
+            if (getAccUsed(0)) {
+                accA = String.valueOf(getCalcInv(0));
+            }
+            if (getAccUsed(1)) {
+                accB = String.valueOf(getCalcInv(1));
+            }
+        }
+        catch(NullPointerException e){
+            System.out.println("");
+        }
+    }
 
+    @Override
+    public String toString() {
+
+        return "Client{" +
+                "name='" + name + '\'' +
+                ", Gross Salary=" + grossSalary +
+                ", Gross Salary Weekly="+ calcWeeklyGross()+
+                ", Net Salary=" + calcNet() +
+                ", Net Salary Weekly="+calcWeeklyNet()+
+                ", Tax=" + calcTax() +
+                ", Tax Weekly="+calcWeeklyTax() +
+                ", Account One="+accA+
+                ", Account Two="+accB+
+                '}';
+    }
 }

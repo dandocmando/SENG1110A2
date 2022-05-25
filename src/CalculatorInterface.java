@@ -7,6 +7,7 @@ SENG1110 Programming Assignment 2
  */
 
 import java.util.*;
+import java.io.*;
 
 public class CalculatorInterface
 {
@@ -33,7 +34,7 @@ public class CalculatorInterface
         cli[0].setClientUsed(true);
         cli[1].setClientUsed(true);
         cli[2].setClientUsed(true);
-        cli[3].setClientUsed(true);
+        //cli[3].setClientUsed(true);
         //cli[4].setClientUsed(true);
         //cli[5].setClientUsed(true);
 
@@ -728,7 +729,7 @@ public class CalculatorInterface
 
         // simple Client sort
         for(int i=0;i<cli.length-1;i++){ // loops for the length of cli -1
-            for(int j=i+1;j<cli.length;j++){ // loops for the length of cli
+            for(int j=i+1;j<cli.length;j++){ // loops for the length of i + 1, this is done so i and j are different clients
                 if(cli[i].getName().compareToIgnoreCase(cli[j].getName()) > 0){ // compares the name of cli[i] and cli[j]
                     // if the result of the above if statement is > 0, that means cli[j] is closer to the start of the
                     // alphabet compared to cli[i] (cli[j] is lexicographically first)
@@ -750,7 +751,6 @@ public class CalculatorInterface
     }
 
 
-
     public void investTable(Client cliInput, int accNum){
         // This method prints out the investment table
         System.out.println("Investment\n Weeks        Balance");
@@ -762,19 +762,52 @@ public class CalculatorInterface
         }
         System.out.println("-------------------------");
         System.out.println("");
-        //cliInput.setWks(tempWks,accNum);
     }
 
 
     public void fileSave(){
+        // This method writes all clients into the export file
 
+        BufferedWriter bw = null; // creates the BufferedReader as null, so it's outside the try
+        try{
+            File file = new File("export.txt"); // new File class created as file object
+            bw = new BufferedWriter(new FileWriter(file)); // new BufferedWriter and FileWriter class created
+            if(!cli[0].getClientUsed()){ // this checks if cli[0] is flagged as used, because of the clientShuffle system
+                // the first client slot will always be filled
+                bw.write("No Clients."); // writes no clients to the file
+            }
+            else{ // if clients exist this will execute
+                for(Client client : cli){ // loops for the number of cli[] in cli array
+                    if(client.getClientUsed()){ // stops empty clients being written
+                        client.toStringPrep(); // check toStringPrep comments in Client Class
+                        bw.write(client.toString()); // writes the toString method into the file
+                        bw.write(System.getProperty("line.separator")); // each repetition a new line will be created
+                        System.out.print("Client: "+client.getName()+" exported."); // tells user which clients exported
+                    }
+                }
+            }
+            System.out.println("");
+            System.out.println("File written Successfully"); // tells user file has been written
+
+        } catch (Exception e) { // catches required for BufferedWriter and FileWriter objects
+            System.out.println("Unable to write to file. "+e);
+        }
+        finally // runs on try completion
+        {
+            try{
+                if(bw!=null) // makes sure bw object isn't still null before closing
+                    bw.close(); // closes the BufferedReader, without this step data stream doesn't end = file blank
+
+            } catch (IOException e) {
+                System.out.println("Program unable to close BufferedWriter. "+e);
+            }
+        }
     }
 
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args){
         CalculatorInterface calc = new CalculatorInterface(); // creates new CalculatorInterface object as calc
-        calc.menu();
+        calc.menu(); // launches the menu
     }
 }
         
