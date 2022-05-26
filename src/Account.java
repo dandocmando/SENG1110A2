@@ -14,10 +14,11 @@ public class Account
     private double inv_rate; // investment rate as a % (0.29)
     private int num_wks; // number of weeks the investment stays invested
     private double inv; // value of weekly contribution
-    private boolean accUsed;
+    private boolean accUsed; // used to query the object as to whether the object has been used
 
 
     public Account(double investmentRate, int numberOfWeeks, double investment, boolean accUsed){
+        // constructor used for all Account object creation
         inv_rate = investmentRate;
         num_wks = numberOfWeeks;
         inv = investment;
@@ -37,11 +38,10 @@ public class Account
         // a complicated (but far superior) way of finding the compound interest from
         // regular contributions. This one line was the hardest part of the assignment to create.
         // this formula compounds weekly and can calculate the value from 1 to 52 weeks, years can be easily implemented.
-        // also calculates assuming that the contribution is made at the start of each week.
 
         return new BigDecimal(FV).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
-    public double calcContribution(){
+    public double calcContribution(){ // calculates investment without interest applied
         return new BigDecimal(inv*num_wks).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
@@ -59,6 +59,4 @@ public class Account
 
     public void setAccUsed(boolean inputUsed){accUsed = inputUsed;}
     public boolean getAccUsed(){return accUsed;}
-
-
 }

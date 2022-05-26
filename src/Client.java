@@ -22,7 +22,7 @@ public class Client
     private double ctx; // calculate tax
     private boolean clientUsed;
     private int numOfAccUsed;
-    private Account[] acc;
+    private final Account[] acc;
 
 
     public Client(String name, double grossSalary, boolean resident, double weeklyExpenses){
@@ -127,15 +127,24 @@ public class Client
 
     public double calcPossibleInvestment(){ double weeklyNet = calcWeeklyNet();
         // BigDecimal is only used to round -> safe to swap back to double
-        if(getNumOfAccUsed()==0){ // this won't deduct the getInvOne as account one doesn't exist yet
-            return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+
+        double alreadyInvested = 0; // this is used to deduct the amount already invested from the possible investment
+        try{ // acc might be null.
+
+            if (acc[0].getAccUsed()) { // checks if acc[0] has been used
+                alreadyInvested += acc[0].getInv(); // adds the investment amount to already invested
+            }
+            if (acc[1].getAccUsed()) {
+                alreadyInvested += acc[1].getInv();
+            }
+
+        } catch(NullPointerException e) { // catches the error caused if the Account object hasn't been constructed
+
         }
-        else{ // this deducts account one investment from the possible investment for account two
-            return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)-getInv(0)).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
-        }        //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
+
+        //doubleValue converts BigDecimal to double, I like this way because it rounds and returns val in one line
+        return new BigDecimal(weeklyNet-weeklyExpenses-(calcMedicare()/52)-alreadyInvested).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
     }
-
-
 
 
     //Setter and Getter section
@@ -163,13 +172,13 @@ public class Client
         else{return acc[1].calcInv();} // returns acc[1] calcInv method
     }
 
-    public int getWks(int num){
+    public int getWks(int num){ // returns both acc number of weeks invested
         if(num==0){return acc[0].getNum_wks();}
         else{return acc[1].getNum_wks();}
     }
 
-    public void setWks(int num_wks,int num){
-        if(num==0){acc[0].setNum_wks(num_wks);}
+    public void setWks(int num_wks,int num){ // sets the number of weeks used
+        if(num==0){acc[0].setNum_wks(num_wks);} // used for table output
         else{acc[1].setNum_wks(num_wks);}
     }
 
@@ -178,35 +187,39 @@ public class Client
         else{return acc[1].getInv();}
     }
 
-    public double getCalcCont(int num){
+    public double getCalcCont(int num){ // returns user investment without interest applied for both accounts
         if(num==0){return acc[0].calcContribution();}
         else{return acc[1].calcContribution();}
     }
 
-    public double getRate(int num){
+    public double getRate(int num){ // returns specified account investment rate
         if (num == 0){return acc[0].getInvRate();}
         else{return acc[1].getInvRate();}
     }
 
-    public boolean getAccUsed(int num) {
+    public boolean getAccUsed(int num) { //returns if the account specified has been used
         if (num == 0) {return acc[0].getAccUsed();}
         else{return acc[1].getAccUsed();}
     }
 
-    public void setAccUsed(boolean setValue, int num) {
+    public void setAccUsed(boolean setValue, int num) { // sets if a specified account has been used, can have t/f input
         if (num == 0) {acc[num].setAccUsed(setValue);}
         if(num == 1){acc[num].setAccUsed(setValue);}
     }
 
     public void toStringPrep() {
+        // function used to manipulate the toString return itinerary.
+        //Changes the "No Account" output if an account has been used.
         accA = "No Account";
         accB = "No Account";
         try{
             if (getAccUsed(0)) {
-                accA = String.valueOf(getCalcInv(0));
+                accA = "Returns="+String.valueOf(getCalcInv(0))+", Weekly Investment="+getInv(0)
+                +", Rate="+getRate(0)+", Weeks="+getWks(0);
             }
             if (getAccUsed(1)) {
-                accB = String.valueOf(getCalcInv(1));
+                accB = "Returns="+String.valueOf(getCalcInv(1))+", Weekly Investment="+getInv(1)
+                        +", Rate="+getRate(1)+", Weeks="+getWks(1);
             }
         }
         catch(NullPointerException e){
@@ -225,8 +238,10 @@ public class Client
                 ", Net Salary Weekly="+calcWeeklyNet()+
                 ", Tax=" + calcTax() +
                 ", Tax Weekly="+calcWeeklyTax() +
-                ", Account One="+accA+
-                ", Account Two="+accB+
+                ", Weekly Expenses="+getWeeklyExpenses()+
+                ", Possible Investment Remaining="+calcPossibleInvestment()+
+                ", Account One: "+accA+ // exports the string created in toStringPrep
+                ", Account Two: "+accB+
                 '}';
     }
 }

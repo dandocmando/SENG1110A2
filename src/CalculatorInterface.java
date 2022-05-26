@@ -12,9 +12,9 @@ import java.io.*;
 public class CalculatorInterface
 {
     private final Client[] cli = new Client[5];
-    private int cliRM; // var used to determine how many clients remain (RM), name is small because it is used everywhere
 
     public CalculatorInterface(){
+        // constructor for CalculatorInterface
         for (int i=0;i<5;i++){ // loops 5 times
             cli[i] = new Client(); // creates 5 new cli Client objects
         }
@@ -29,155 +29,12 @@ public class CalculatorInterface
         cli[0].createAccount(0.2,52,200);
         cli[0].createAccount(0.2,35,600);
 
-        //cli[1] = null;
-        //cliRM=1;
         cli[0].setClientUsed(true);
         cli[1].setClientUsed(true);
         cli[2].setClientUsed(true);
         //cli[3].setClientUsed(true);
         //cli[4].setClientUsed(true);
         //cli[5].setClientUsed(true);
-
-
-    }
-
-
-    public void run() {
-        // This is the main function all data is displayed in
-        Scanner console = new Scanner(System.in); // creates new Scanner object as console
-        Client client = new Client(); // creates the required objects from Client & Account classes
-        Account account = new Account();
-        System.out.print("Please enter your full name: ");
-        String nameIn = console.nextLine();
-        nameIn = isNameAllowed(nameIn); // passes name back into nameIn
-
-        client.setName(nameIn); // assigns the String name var in the client object with name var defined by user
-
-        System.out.print("Gross income: $");
-        double gross = inputChecker_double(console.next()); // uses inputChecker method to verify if input is a double
-        boolean isPositive = false;
-        while(!isPositive){
-            if(gross < 0){
-                System.out.print("Please enter a value above 0: $");
-                gross = inputChecker_double(console.next());
-            }
-            else
-                isPositive = true;
-
-        }
-        client.setGross(gross);
-        //System.out.println(client.getGross()); // pulls the grossSalary var from the client object using the getGross getter method
-
-        System.out.print("Resident: (Enter true or false)");
-        // can't build a function for bool as the parse bool only accepts true, all other inputs default to false
-        String bool_check = console.next(); // user inputs bool as a string, so I can use the below if function
-        boolean bool_allowed = false; // initialises variables (vars henceforth)
-        boolean resident = false;
-        while(!bool_allowed){ // loops until bool_allowed = true
-            if (bool_check.equalsIgnoreCase("true") || bool_check.equalsIgnoreCase("false")) {
-                // above if statement compares "true" & "false" to the user input in bool_check var
-                resident = Boolean.parseBoolean(bool_check); // if bool_check var is a bool, it will be converted
-                bool_allowed = true; // stops the loop
-            } else {
-                System.out.print("That's not a boolean, please enter a boolean: ");
-                bool_check = console.next(); // loops until user enters a legal input
-            }
-        }
-        client.setResident(resident); // assigns the resident bool var in client object with user true/false input
-        //System.out.println(client.getResident()); // used for debugging
-
-        //Prints out all user tax and salary values, shows pre-tax & post tax salary, plus tax applied & medicare levy
-        System.out.println("Name:" + client.getName() + "\n");
-        System.out.println("Gross Salary");
-        System.out.println("Per week: $" + client.calcWeeklyGross());
-        System.out.println("Per Year: $" + client.getGross() + "\n");
-
-        System.out.println("Tax Applied");
-        System.out.println("Per week: $" + client.calcWeeklyTax());
-        System.out.println("Per year: $" + client.calcTax() + "\n");
-
-        System.out.println("Net Salary");
-        System.out.println("Per week: $" + client.calcWeeklyNet());
-        System.out.println("Per year: $" + client.calcNet() + "\n");
-
-        System.out.println("Medicare Levy Per Year: $" + client.calcMedicare());
-
-        System.out.print("Enter your weekly expenses (Enter an average): $");
-        double weeklyExpenses = inputChecker_double(console.next());
-
-        while(weeklyExpenses <= 0){ // ensures user doesn't enter 0 or below
-            System.out.print("Please enter a value above 0: $");
-            weeklyExpenses = inputChecker_double(console.next());
-        }
-        boolean spendingAllowed = false; // initialises the loop bool
-        while(!spendingAllowed){ // loops until spendingAllowed = true
-            if(client.calcWeeklyNet() < weeklyExpenses){ // checks if expenses is higher than weekly net
-                System.out.println("You currently spend more than your net earnings per week, would you like to enter a new value or end the program?");
-                System.out.print("(Y or N): ");
-                String willCont = console.next();
-                if(willCont.equalsIgnoreCase("Y")){
-                    System.out.print("Please enter a new weekly expense value: $");
-                    double newSpending = inputChecker_double(console.next());
-                    while(newSpending <= 0){ // ensures user doesn't enter a new number that is negative
-                        System.out.print("Please enter a value above 0: $");
-                        newSpending = inputChecker_double(console.next());
-                    }
-                    weeklyExpenses = newSpending; // assigns new weekly expenses from newSpending input
-                }
-                else
-                    System.exit(0); // ends program
-            }
-            else
-                spendingAllowed = true; // ends the loop
-        }
-
-        client.setWeeklyExpenses(weeklyExpenses);
-        System.out.println("Maximum possible investment weekly: $" + client.calcPossibleInvestment());
-        System.out.print("Enter desired investment: $");
-        double inv = inputChecker_double(console.next());
-        while(inv <= 0){
-            System.out.print("Please enter a value above 0: $");
-            inv = inputChecker_double(console.next());
-        }
-
-        boolean invAllowed = false; // initialises bool as false
-        while (!invAllowed) { // loops until invAllowed = true
-            if (inv > client.calcPossibleInvestment()) { // checks if inv is greater than the possible investment
-                System.out.print("Please enter an investment below $" + client.calcPossibleInvestment() + ": ");
-                inv = inputChecker_double(console.next());
-            } else {
-                invAllowed = true; // stops loop
-                System.out.println("Investment value accepted.");
-                account.setInv(inv);
-            }
-        }
-
-        System.out.print("Enter the investment rate as a %: ");
-        double inv_rate = inputChecker_double(console.next());
-        account.setInvRate(inv_rate);
-
-        System.out.println("Would you like to invest for an entire year?");
-        System.out.print("Enter Y or N: ");
-        String invest_year = console.next();
-
-        if (invest_year.equalsIgnoreCase("Y")) {
-            account.setNum_wks(52); // assigns weeks to 52 as that is an entire year in wks
-        } else {
-            System.out.print("Enter the number of weeks you would like to invest for: ");
-            int invest_weeks = inputChecker_int(console.next());
-            boolean overYear = false;
-            while(!overYear){
-                if(invest_weeks > 52 || invest_weeks <= 0){ // checks if weeks is inside boundaries
-                    System.out.print("Please enter a number between 1-52 (weeks): ");
-                    invest_weeks = inputChecker_int(console.next());
-                }
-                else
-                    overYear = true; // ends loop
-            }
-            account.setNum_wks(invest_weeks); // allows the user to set custom number of weeks
-        }
-
-        System.out.println("\nInvestment value after " + account.getNum_wks() + " weeks: $" + account.calcInv());
     }
 
 
@@ -362,10 +219,11 @@ public class CalculatorInterface
     public void addClient(){
         Scanner console = new Scanner(System.in); // creates new Scanner object as console
         boolean accountUsed = true;
-        cliRM = 0;
-        while(accountUsed){
+        // var used to determine how many clients remain (RM), name is small because it is used everywhere
+        int cliRM = 0;
+        while(accountUsed){ // loops until false
             try{
-                if(cli[cliRM].getClientUsed()){
+                if(cli[cliRM].getClientUsed()){ // checks if cli[i] is used, once out of bounds catch is output
                     cliRM++;
                 }
                 else{
@@ -415,16 +273,12 @@ public class CalculatorInterface
                     cli[cliRM].setWeeklyExpenses(weeklyExpenses);
                     cli[cliRM].setClientUsed(true);
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException e) { // output when all 5 accounts are set as used
                 accountUsed = false;
                 System.out.println(cliRM);
                 System.out.println("You have used all the 5 client slots.");
             }
-
         }
-
-
-
     }
 
 
@@ -520,29 +374,31 @@ public class CalculatorInterface
     }
 
     public void delClient(){
+        // This function deletes a client from the cli array
         Scanner console = new Scanner(System.in);
 
         System.out.println("Which client would you like to delete?");
-        for (int i = 0; i < 5;i++ ) {
-            if(cli[i].getClientUsed()){
-                System.out.println(i+1 + ". " + cli[i].getName());
+        for (int i = 0; i < 5;i++ ){
+            if(cli[i].getClientUsed()){ // checks if clientUsed is true for each client
+                System.out.println(i+1 + ". " + cli[i].getName()); // prints the list of clients
             }
         }
         System.out.print("Choice (1,2,3 etc): ");
-        int cliDel = belowZeroChecker_int(inputChecker_int(console.next()))-1;
-        String tempName = cli[cliDel].getName();
-        cli[cliDel] = new Client();
-        clientShuffle();
+        int cliDel = belowZeroChecker_int(inputChecker_int(console.next()))-1; // uses 2 methods on cliDel input
+        String tempName = cli[cliDel].getName(); // creates name before client is deleted
+        cli[cliDel] = new Client(); // new client object created in specified cli
+        clientShuffle(); // moves all clients up, empty space in array removed
         System.out.println("Client " + tempName + " deleted\n");
     }
 
 
     public void delAccount() {
+        //This function deletes an account from a specified client in the cli array
         Scanner console = new Scanner(System.in);
 
         System.out.println("Which clients account would you like to delete?");
         for (int i = 0; i < 5; i++) {
-            if(cli[i].getClientUsed()){
+            if(cli[i].getClientUsed()){ // prints out the list of cli objects used
                 System.out.println(i+1+". "+cli[i].getName());
             }
         }
@@ -551,7 +407,7 @@ public class CalculatorInterface
         int accNum = belowZeroChecker_int(inputChecker_int(console.next())) - 1;
 
         System.out.println("Which account would you like to delete?");
-        if (cli[accNum].getNumOfAccUsed() == 0) {
+        if (cli[accNum].getNumOfAccUsed() == 0) { // checks if number of accounts for the specified accounts is 0
             System.out.println("No accounts created for this client, create an account first.");
         }
         if(cli[accNum].getNumOfAccUsed()>0){
@@ -565,22 +421,19 @@ public class CalculatorInterface
             System.out.print("Choice: ");
             int accDel = belowZeroChecker_int(inputChecker_int(console.next()))-1;
             System.out.println(accDel);
-            cli[accNum].deleteAccount(accDel);
-            cli[accNum].accountShuffle();
-            cli[accNum].setAccUsed(false, accNum);
+            cli[accNum].deleteAccount(accDel); // uses the method inside client to delete the specified account
+            cli[accNum].accountShuffle(); // moves account 2 into account 1 slot if applicable
+            cli[accNum].setAccUsed(false, accNum); // sets the account deleted to not used
 
         }
-
-
-
-
     }
 
     public void disClient(){
+        //This function displays a specified client
         Scanner console = new Scanner(System.in);
         System.out.println("Which client would you like to view?");
         for (int i = 0; i < 5;i++ ) {
-            if(cli[i].getClientUsed()){
+            if(cli[i].getClientUsed()){ // prints list of clients
                 System.out.println(i+1 + ". " + cli[i].getName());
             }
         }
@@ -605,14 +458,17 @@ public class CalculatorInterface
         System.out.println("Per year: $" + cli[view].calcNet() + "\n");
 
         System.out.println("Medicare Levy Per Year: $" + cli[view].calcMedicare()+"\n");
+
+        System.out.println("Weekly Expenses: $"+cli[view].getWeeklyExpenses());
+        System.out.println("Remaining money able to be invested: $"+cli[view].calcPossibleInvestment()+"\n");
+
         try{
             cli[view].getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
             System.out.println("Investment Account One:"); // this will be displayed if the account exists
             System.out.println("Contributed: $"+cli[view].getCalcCont(0)+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRate(0)*100+"% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
-            investTable(cli[view],0);
 
-        } catch (Exception e) { // this is the exception created by the first try line
+        } catch (NullPointerException e) { // this is the exception created by the first try line
             System.out.println("Account One: Does not exist.\n"); // informs user that the account doesn't exist
         }
 
@@ -621,10 +477,8 @@ public class CalculatorInterface
             System.out.println("Investment results Account Two:");
             System.out.println("Contributed: $" + cli[view].getCalcCont(1) + " over " + cli[view].getWks(1) + " weeks at " + cli[view].getRate(1) * 100 + "% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
-            investTable(cli[view],1);
 
-
-        } catch(Exception e){
+        } catch(NullPointerException e){
             System.out.println("Account Two: Does not exist.");
         }
         System.out.println("------------------------------------------------------------");
@@ -633,10 +487,11 @@ public class CalculatorInterface
 
 
     public void disAccount(){
+        // Displays the specified account
         Scanner console = new Scanner(System.in);
         System.out.println("Which clients account would you like to view?");
         for (int i = 0; i < 5;i++ ) {
-            if(cli[i].getClientUsed()){
+            if(cli[i].getClientUsed()){ // displays the list of clients
                 System.out.println(i+1 + ". " + cli[i].getName());
             }
         }
@@ -652,23 +507,29 @@ public class CalculatorInterface
             System.out.println("Contributed: $"+cli[view].getCalcCont(0)+" over "+cli[view].getWks(0)+" weeks at "+cli[view].getRate(0)*100+"% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(0)+"\n");
 
-        } catch (Exception e) { // this is the exception created by the first try line
+            investTable(cli[view],0);
+
+        } catch (NullPointerException e) { // this is the exception created
             System.out.println("Account One: Does not exist.\n"); // informs user that the account doesn't exist
         }
 
         try{
             cli[view].getCalcInv(1);
-            System.out.println("Investment results Account Two:");
+            System.out.println("Investment Account Two:");
             System.out.println("Contributed: $" + cli[view].getCalcCont(1) + " over " + cli[view].getWks(1) + " weeks at " + cli[view].getRate(1) * 100 + "% interest.");
             System.out.println("Current balance: $"+ cli[view].getCalcInv(1)+"\n");
-        } catch(Exception e){
+
+            investTable(cli[view],1);
+
+        } catch(NullPointerException e){
             System.out.println("Account Two: Does not exist.");
         }
     }
 
 
     public void disAllClient(){
-        clientSort();
+        // Displays all used clients inside the cli array
+        clientSort(); // this function sorts the cli array by the name var in the client object
         for (Client client : cli) { // loops through the cli array of Client objects
             if (client.getClientUsed()) { // if ClientUsed is false then object cli[i] won't be printed.
                 //Prints out all user tax and salary values, shows pre-tax & post tax salary, plus tax applied & medicare levy
@@ -688,21 +549,25 @@ public class CalculatorInterface
                 System.out.println("Per year: $" + client.calcNet() + "\n");
 
                 System.out.println("Medicare Levy Per Year: $" + client.calcMedicare() + "\n");
+
+                System.out.println("Weekly Expenses: $"+client.getWeeklyExpenses());
+                System.out.println("Remaining money able to be invested: $"+client.calcPossibleInvestment()+"\n");
+
                 try {
                     client.getCalcInv(0); // if the account doesn't exist this will gen an error and the catch msg will display
                     System.out.println("Investment Account One:"); // this will be displayed if the account exists
                     System.out.println("Contributed: $" + client.getCalcCont(0) + " over " + client.getWks(0) + " weeks at " + client.getRate(0) * 100 + "% interest.");
                     System.out.println("Current balance: $" + client.getCalcInv(0) + "\n");
-                } catch (Exception e) { // this is the exception created by the first try line
+                } catch (NullPointerException e) { // this is the exception created by the first try line
                     System.out.println("Account One: Does not exist.\n"); // informs user that the account doesn't exist
                 }
 
                 try {
                     client.getCalcInv(1);
-                    System.out.println("Investment results Account Two:");
+                    System.out.println("Investment Account Two:");
                     System.out.println("Contributed: $" + client.getCalcCont(1) + " over " + client.getWks(1) + " weeks at " + client.getRate(1) * 100 + "% interest.");
                     System.out.println("Current balance: $" + client.getCalcInv(1) + "\n");
-                } catch (Exception e) {
+                } catch (NullPointerException e) {
                     System.out.println("Account Two: Does not exist.");
                 }
                 System.out.println("------------------------------------------------------------");
@@ -748,6 +613,7 @@ public class CalculatorInterface
                 }
             }
         }
+        clientShuffle();
     }
 
 
@@ -776,7 +642,7 @@ public class CalculatorInterface
                 // the first client slot will always be filled
                 bw.write("No Clients."); // writes no clients to the file
             }
-            else{ // if clients exist this will execute
+            else{ // if clients have been created this will execute
                 for(Client client : cli){ // loops for the number of cli[] in cli array
                     if(client.getClientUsed()){ // stops empty clients being written
                         client.toStringPrep(); // check toStringPrep comments in Client Class
