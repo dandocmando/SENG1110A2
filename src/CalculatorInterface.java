@@ -285,9 +285,9 @@ public class CalculatorInterface
     public void addAccount() {
         Scanner console = new Scanner(System.in);
         boolean allAccountsUsed = true;
-        for(Client client : cli){
-            if (client.getNumOfAccUsed() !=2) {
-                allAccountsUsed = false;
+        for(Client client : cli){ // this is an enhanced for loop, it was added to java in 2004
+            if (client.getNumOfAccUsed() !=2) { // checks if the number of accounts equals 2 for each cli[]
+                allAccountsUsed = false; // 2 means that both account slots in the array are used
                 break;
             }
         }
@@ -307,9 +307,9 @@ public class CalculatorInterface
             System.out.print("Choice (1,2,3 etc): ");
             accAdd = belowZeroChecker_int(inputChecker_int(console.next()))-1; // selects the client ,-1 negates the above +1
             if (cli[accAdd].getNumOfAccUsed() ==2){
-                System.out.println("");
+                System.out.print("\n");
                 System.out.println("Client: "+cli[accAdd].getName()+" already has two accounts.");
-                System.out.println("");
+                System.out.print("\n");
             }
             else{
                 accAddAllowed = true;
@@ -581,8 +581,8 @@ public class CalculatorInterface
         int index = 0;
         for(int i=0;i<cli.length;i++){ // loops for the length of cli
             if(cli[i].getClientUsed()){ // this is a var used in cli to declare if the cli object is used
-                Client temp = cli[index]; // simple sorting array which moves all the used cli objects in the array to the front
-                cli[index] = cli[i];
+                Client temp = cli[index]; // simple sorting array which moves all the used cli objects in the array
+                cli[index] = cli[i]; // to the front of the array
                 cli[i]= temp;
                 index++;
             }
@@ -609,11 +609,11 @@ public class CalculatorInterface
                     Client temp = cli[i]; // creates a Client object temp
                     cli[i] = cli[j];
                     cli[j]=temp;
-                    // these steps result in cli[j] and cli[i] being the previous value of the other.
+                    // these steps result in cli[j] and cli[i] being the value of the other.
                 }
             }
         }
-        clientShuffle();
+        clientShuffle(); // fixes the order of the sorted cli array
     }
 
 
@@ -624,10 +624,10 @@ public class CalculatorInterface
         int tempWks = cliInput.getWks(accNum); // sets temp to the number of weeks the investment period is
         for(int i = 4;i<= tempWks;i+=4){ // loops at an interval of 4 until the loop reaches temp
             cliInput.setWks(i,accNum); // modifies the num_wks value to change getCalvInv output
-            System.out.println(i+" :           $"+cliInput.getCalcInv(accNum));
+            System.out.println(i+" :           $"+cliInput.getCalcInv(accNum)); // prints out the value at i week
         }
         System.out.println("-------------------------");
-        System.out.println("");
+        System.out.print("\n");
     }
 
 
@@ -652,7 +652,8 @@ public class CalculatorInterface
                     }
                 }
             }
-            System.out.println("");
+
+            System.out.print("\n");
             System.out.println("File written Successfully"); // tells user file has been written
 
         } catch (Exception e) { // catches required for BufferedWriter and FileWriter objects
