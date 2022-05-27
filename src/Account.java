@@ -1,7 +1,7 @@
 /*
 Author: Daniel Ferguson
 Auth ID: 3374690
-Date: 09/05/2022
+Date: 27/05/2022
 Description: Account Class, calculates the users' investment valuation
 SENG1110 Programming Assignment 2
  */
@@ -17,15 +17,17 @@ public class Account
     private boolean accUsed; // used to query the object as to whether the account has been used
 
 
+    public Account(){ // default constructor
+        accUsed = false; // sets accUsed to false as default
+    }
+
     public Account(double investmentRate, int numberOfWeeks, double investment, boolean accUsed){
-        // constructor used for all Account object creation
+        // constructor used for creating client accounts
         inv_rate = investmentRate;
         num_wks = numberOfWeeks;
         inv = investment;
         this.accUsed = accUsed;
     }
-
-    public Account(){}
 
 
     public double calcInv(){
