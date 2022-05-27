@@ -11,10 +11,10 @@ import java.math.RoundingMode;
 
 public class Account
 {
-    private double inv_rate; // investment rate as a % (0.29)
+    private double inv_rate; // investment rate as a % eg 0.2
     private int num_wks; // number of weeks the investment stays invested
     private double inv; // value of weekly contribution
-    private boolean accUsed; // used to query the object as to whether the object has been used
+    private boolean accUsed; // used to query the object as to whether the account has been used
 
 
     public Account(double investmentRate, int numberOfWeeks, double investment, boolean accUsed){
@@ -23,7 +23,6 @@ public class Account
         num_wks = numberOfWeeks;
         inv = investment;
         this.accUsed = accUsed;
-
     }
 
     public Account(){}
@@ -34,17 +33,18 @@ public class Account
         double t = 1; // if we wanted to calculate investment over multiple years this would be used
         int n = 52; // number of weeks in a year, I have used small var names to condense the FV line of code
 
-        FV = inv*((Math.pow((1+inv_rate/n),(num_wks*t))-1)/(inv_rate/n));//*(1+inv_rate/n);
-        // a complicated (but far superior) way of finding the compound interest from
-        // regular contributions. This one line was the hardest part of the assignment to create.
-        // this formula compounds weekly and can calculate the value from 1 to 52 weeks, years can be easily implemented.
+        FV = inv*((Math.pow((1+inv_rate/n),(num_wks*t))-1)/(inv_rate/n)); //*(1+inv_rate/n); // removed so calc is at weeks end
+        // calculates the investment, desc removed
 
         return new BigDecimal(FV).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
+
     public double calcContribution(){ // calculates investment without interest applied
         return new BigDecimal(inv*num_wks).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
+
+    // setters and getters
     public void setInvRate(double inputRate){ inv_rate = inputRate/100;}
     public double getInvRate()
     {

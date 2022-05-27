@@ -11,174 +11,46 @@ import java.io.*;
 
 public class CalculatorInterface
 {
-    private final Client[] cli = new Client[5];
+    private final Client[] cli = new Client[5]; // creates the array of Client objects
+    private int numOfCliUsed = 0; // tracks the number of clients currently used
 
-    public CalculatorInterface(){
-        // constructor for CalculatorInterface
+    public CalculatorInterface(){ // constructor for CalculatorInterface
+
         for (int i=0;i<5;i++){ // loops 5 times
             cli[i] = new Client(); // creates 5 new cli Client objects
         }
+
         cli[0] = new Client("daniel ferguson",90000,true,200);
         cli[1] = new Client("john kok",45000,true,350);
         cli[2] = new Client("zzz pppp",45000,true,350);
         cli[3] = new Client("aaa ddd",45000,true,350);
-        //cli[4] = new Client("agg ddd",45000,true,350);
-        //cli[5] = new Client("bbb ddd",45000,true,350);
 
-        //cli[2].createAccount(0.2,52,400);
         cli[0].createAccount(0.2,52,200);
         cli[0].createAccount(0.2,35,600);
 
         cli[0].setClientUsed(true);
         cli[1].setClientUsed(true);
         cli[2].setClientUsed(true);
-        //cli[3].setClientUsed(true);
-        //cli[4].setClientUsed(true);
-        //cli[5].setClientUsed(true);
+        cli[3].setClientUsed(true);
+
     }
 
 
-     public double inputChecker_double(String input){
-        // This function checks if an input String can be turned into a double
-        Scanner console = new Scanner(System.in);
+    public void menu(){ // This is the main menu you access the required functions and methods from
 
-        double inVar = 0;  // initialises variables
-        boolean loop;
-        String in = input;
-
-         //This is needed so if the user initially enters a double they aren't asked to re-enter it in the while loop
-         try{
-             inVar = Double.parseDouble(in);  // attempts to convert String into a double
-             loop = false;  // the above line doesn't give an error then the loop isn't required
-         }
-         catch(NumberFormatException e){  // exception caused if the String cannot be a double
-             loop = true;
-         }
-
-         while(loop){ // loops until loop = false
-             try {
-                 System.out.print("Enter a double: ");
-                 in = console.next(); // assigns in the users input
-                 inVar = Double.parseDouble(in);
-                 loop = false;
-             }
-             catch(NumberFormatException e){
-                 System.out.println("That wasn't a double.");
-             }
-        }
-         return inVar; // returns value modified or not
-     }
-
-
-    public int inputChecker_int(String input){
-        // This function is the same as inputChecker_double, refer to that function for comments
-        Scanner console = new Scanner(System.in);
-
-        int inVar = 0;
-        boolean loop;
-        String in = input;
-
-        try{
-            inVar = Integer.parseInt(in);  // attempts to convert String to an int
-            loop = false;
-        }
-        catch(NumberFormatException e){
-            loop = true;
-        }
-
-        while(loop){
-            try {
-                System.out.print("Enter an Integer: ");
-                in = console.next();
-                inVar = Integer.parseInt(in);
-
-                loop = false;
-            }
-            catch(NumberFormatException e){
-                System.out.println("That wasn't an Integer.");
-            }
-        }
-        return inVar;
-    }
-
-
-    public double belowZeroChecker_double(double numInput){
-        // This function checks if the user entered a number below zero and asks them to enter a number above 0
-        Scanner console = new Scanner(System.in);
-        boolean above_zero = false;
-        if(numInput <=0){ // checks if the value is already above 0, if so then the while below is bypassed
-            while(!above_zero){ // loops until loop is true
-                System.out.print("Please enter a number above 0: ");
-                numInput = inputChecker_double(console.next()); // takes input, passes through input checker first.
-                if(numInput > 0){ // checks if the new input is above 0
-                    above_zero = true; // stops loop
-                }
-            }
-        }
-        return numInput; // returns modified value
-    }
-
-
-    public int belowZeroChecker_int(int numInput){
-        // This function checks if the user entered a number below zero and asks them to enter a number above 0
-        Scanner console = new Scanner(System.in);
-        boolean above_zero = false;
-        if(numInput <=0){ // checks if the value is already above 0, if so then the while below is bypassed
-            while(!above_zero){ // loops until loop is true
-                System.out.print("Please enter a number above 0: ");
-                numInput = inputChecker_int(console.next()); // takes input, passes through input checker first.
-                if(numInput > 0){ // checks if the new input is above 0
-                    above_zero = true; // stops loop
-                }
-            }
-        }
-        return numInput; // returns modified value
-    }
-
-
-    public boolean bool_check(String boolInput){
-        // This function checks if the string input can be parsed into boolean.
-        Scanner console = new Scanner(System.in);
-        boolean bool_allowed = false; // initialises variables (vars henceforth)
-        boolean resident = false;
-        while(!bool_allowed){ // loops until bool_allowed = true
-            if (boolInput.equalsIgnoreCase("true") || boolInput.equalsIgnoreCase("false")) {
-                // above if statement compares "true" & "false" to the user input in bool_check var
-                resident = Boolean.parseBoolean(boolInput); // if bool_check var is a bool, it will be converted
-                bool_allowed = true; // stops the loop
-            } else {
-                System.out.print("That's not a boolean, please enter a boolean: ");
-                boolInput = console.next(); // loops until user enters a legal input
-            }
-        }
-        return resident;
-    }
-
-
-    public String isNameAllowed(String nameIn){ // checks if the user has entered a first and last name
-        Scanner console = new Scanner(System.in);
-        String[] split_name = nameIn.split(" "); // splits input string into a String array
-
-        boolean name_allowed = false;
-        while(!name_allowed){ // loops until true
-            if(split_name.length != 2){ // if this is false user hasn't entered two names
-                System.out.print("Please enter a first and last name: ");
-                nameIn = console.nextLine();
-                split_name = nameIn.split(" ");
-            }
-            else{
-                name_allowed = true; // ends loop
-            }
-        }
-        return nameIn; // returns potentially modified nane.
-    }
-
-
-    public void menu(){
         Scanner console = new Scanner(System.in); // creates new Scanner object as console
 
         boolean endProgram = false;
         while(!endProgram){
+
+            numOfCliUsed = 0; // resets the var
+            for (Client client : cli) { // this is an enhanced for loop, it was added to java in 2004
+                if (client.getClientUsed()){ // if the client is used numofcli var is incremented by 1
+                    numOfCliUsed++; // inside endProgram so var updates when each function modifies the clients
+                }
+            }
+
+            System.out.print("\n"); // prints out menu
             System.out.println("Menu:");
             System.out.println("1. Add Client");
             System.out.println("2. Delete Client");
@@ -191,70 +63,69 @@ public class CalculatorInterface
             System.out.println("0. End Program");
             System.out.print("Choice: ");
 
-            int menu_choice = console.nextInt();
-            switch (menu_choice) {
-                case 1 ->
-                        addClient();
-                case 2 ->
-                        delClient();
-                case 3 ->
-                        addAccount();
-                case 4 ->
-                        delAccount();
-                case 5 ->
-                        disAllClient();
-                case 6 ->
-                        disClient();
-                case 7 ->
-                        disAccount();
-                case 8 ->
-                        fileSave();
-                case 0->
+            int menu_choice = console.nextInt(); // determines which case is used
+            switch(menu_choice){
+                case 1 -> addClient();
+                case 2 -> delClient();
+                case 3 -> addAccount();
+                case 4 -> delAccount();
+                case 5 -> disAllClient();
+                case 6 -> disClient();
+                case 7 -> disAccount();
+                case 8 -> fileSave();
+                case 0-> endProgram = true; // ends the program by stopping the while loop
+                default -> endProgram = true; // if no option is chosen program ends
+            }
+
+            if(!endProgram){ // program would ask twice to end the program without this
+                System.out.print("Would you like to return to the menu? (Y or N): ");
+                String menu_return = console.next(); // shows up before the menu is launched again
+                if (!menu_return.equalsIgnoreCase("Y")) {
                     endProgram = true;
+                }
             }
         }
     }
 
 
-    public void addClient(){
+    public void addClient(){ // adds data into an unused cli[] in the cli array of Clients
+
         Scanner console = new Scanner(System.in); // creates new Scanner object as console
         boolean accountUsed = true;
-        // var used to determine how many clients remain (RM), name is small because it is used everywhere
-        int cliRM = 0;
+        int cliRem = 0; // var used to determine how many clients remain (Rem)
         while(accountUsed){ // loops until false
             try{
-                if(cli[cliRM].getClientUsed()){ // checks if cli[i] is used, once out of bounds catch is output
-                    cliRM++;
+                if(cli[cliRem].getClientUsed()){ // checks if cli[i] is used, once out of bounds, catch is output
+                    cliRem++;
                 }
                 else{
-                    accountUsed = false;
-                    System.out.println(cliRM);
-                    System.out.println(cli[cliRM].getClientUsed());
+                    accountUsed = false; // ends loop
 
                     System.out.print("Please enter your full name: ");
                     String nameIn = console.nextLine();
-                    nameIn = isNameAllowed(nameIn); // passes name back into nameIn
-                    cli[cliRM].setName(nameIn); // assigns the String name var in the client object with name var defined by user
+                    nameIn = isNameAllowed(nameIn); // passes name back into nameIn, checks if allowed
+                    cli[cliRem].setName(nameIn); // assigns the String name var in the Client object with name var defined by user
                     System.out.print("Gross income: $");
                     double gross = belowZeroChecker_double(inputChecker_double(console.next())); // uses inputChecker method to verify if input is a double
-                    cli[cliRM].setGross(gross);
+                    cli[cliRem].setGross(gross); // uses set method to assign grossSalary var in Client object
 
                     System.out.print("Resident(Enter true or false): ");
                     boolean resident = bool_check(console.next());
-                    cli[cliRM].setResident(resident); // assigns the resident bool var in client object with user true/false input
+                    cli[cliRem].setResident(resident); // assigns the resident bool var in Client object with user true/false input
 
-                    System.out.println("Weekly net Income: $"+cli[cliRM].calcWeeklyNet());
-                    System.out.println(cli[cliRM].calcMedicare());
+                    System.out.println("Weekly net Income: $"+cli[cliRem].calcWeeklyNet()); // outputs amount user cannot spend more than
 
                     System.out.print("Enter your weekly expenses (Enter an average): $");
                     double weeklyExpenses = belowZeroChecker_double(inputChecker_double(console.next()));
+                    // uses belowZero and inputChecker methods to make sure String input is a double and also above 0
 
                     boolean spendingAllowed = false; // initialises the loop bool
                     while(!spendingAllowed){ // loops until spendingAllowed = true
-                        if(cli[cliRM].calcWeeklyNet() < weeklyExpenses){ // checks if expenses is higher than weekly net
+                        if(cli[cliRem].calcWeeklyNet() < weeklyExpenses){ // checks if expenses is higher than weekly net
                             System.out.println("You currently spend more than your net earnings per week, would you like to enter a new value?");
                             System.out.print("(Y or N): ");
                             String willCont = console.next();
+
                             if(willCont.equalsIgnoreCase("Y")){
                                 System.out.print("Please enter a new weekly expense value: $");
                                 double newSpending = inputChecker_double(console.next());
@@ -270,29 +141,28 @@ public class CalculatorInterface
                         else
                             spendingAllowed = true; // ends the loop
                     }
-                    cli[cliRM].setWeeklyExpenses(weeklyExpenses);
-                    cli[cliRM].setClientUsed(true);
+                    cli[cliRem].setWeeklyExpenses(weeklyExpenses);
+                    cli[cliRem].setClientUsed(true); // this bool is used all over the program to check if cli[] has been used
                 }
             } catch (ArrayIndexOutOfBoundsException e) { // output when all 5 accounts are set as used
-                accountUsed = false;
-                System.out.println(cliRM);
+                accountUsed = false; // stops the acc used loop
                 System.out.println("You have used all the 5 client slots.");
             }
         }
     }
 
 
-    public void addAccount() {
+    public void addAccount() { // adds an account to a specified Client object
+
         Scanner console = new Scanner(System.in);
         boolean allAccountsUsed = true;
-        for(Client client : cli){ // this is an enhanced for loop, it was added to java in 2004
+        for(Client client : cli){
             if (client.getNumOfAccUsed() !=2) { // checks if the number of accounts equals 2 for each cli[]
                 allAccountsUsed = false; // 2 means that both account slots in the array are used
                 break;
             }
         }
-        int accAdd = 0;
-        System.out.println(allAccountsUsed);
+        int accAdd = 0; // defined outside while loop so can be accessed later
 
         boolean accAddAllowed = false;
         while(!accAddAllowed){
@@ -304,19 +174,26 @@ public class CalculatorInterface
                     }
                 }
             }
+
             System.out.print("Choice (1,2,3 etc): ");
-            accAdd = belowZeroChecker_int(inputChecker_int(console.next()))-1; // selects the client ,-1 negates the above +1
-            if (cli[accAdd].getNumOfAccUsed() ==2){
+            accAdd = inBounds(belowZeroChecker_int(inputChecker_int(console.next())));
+            // uses 3 methods together to ensure:
+            // 1: input is an int. (inputChecker_int)
+            // 2: input is above 0. (belowZeroChecker_int)
+            // 3: input is inside the bounds, which means the user chose an option printed on the list above. (inBounds)
+            // the methods will correct all these issues, before user passes this point, input will comply.
+
+            if (cli[accAdd].getNumOfAccUsed() == 2){ // checks if the client already has two accounts
                 System.out.print("\n");
-                System.out.println("Client: "+cli[accAdd].getName()+" already has two accounts.");
+                System.out.println("Client: "+cli[accAdd].getName()+" already has two accounts."); // outputs the client has 2 accounts
                 System.out.print("\n");
             }
             else{
-                accAddAllowed = true;
+                accAddAllowed = true; // ends loop
             }
         }
 
-        if(!allAccountsUsed){
+        if(!allAccountsUsed){ // runs if one of the used clients has at least one account slot available
 
             System.out.println(accAdd);
             System.out.println("Maximum possible investment weekly: $" + cli[accAdd].calcPossibleInvestment());
@@ -365,16 +242,16 @@ public class CalculatorInterface
                         invLength = true; // ends loop
                 }
             }
-            cli[accAdd].createAccount(inv_rate,num_wks,inv);
-            System.out.print(cli[accAdd].getCalcInv(0)+"\n");
+            cli[accAdd].createAccount(inv_rate,num_wks,inv); // creates a new account
         }
         else{
             System.out.println("No clients currently exist, please add a client first.\n");
         }
     }
 
-    public void delClient(){
-        // This function deletes a client from the cli array
+
+    public void delClient(){ // This function deletes a client from the cli array
+
         Scanner console = new Scanner(System.in);
 
         System.out.println("Which client would you like to delete?");
@@ -384,16 +261,18 @@ public class CalculatorInterface
             }
         }
         System.out.print("Choice (1,2,3 etc): ");
-        int cliDel = belowZeroChecker_int(inputChecker_int(console.next()))-1; // uses 2 methods on cliDel input
-        String tempName = cli[cliDel].getName(); // creates name before client is deleted
+        int cliDel = belowZeroChecker_int(inputChecker_int(console.next())); // uses 2 methods on cliDel input
+        cliDel = inBounds(cliDel); // ensures user cannot choose client that doesn't exist
+
+        String tempName = cli[cliDel].getName(); // creates tempName before client is deleted & thus getName is null
         cli[cliDel] = new Client(); // new client object created in specified cli
         clientShuffle(); // moves all clients up, empty space in array removed
         System.out.println("Client " + tempName + " deleted\n");
     }
 
 
-    public void delAccount() {
-        //This function deletes an account from a specified client in the cli array
+    public void delAccount() { //This function deletes an account from a specified client in the cli array
+
         Scanner console = new Scanner(System.in);
 
         System.out.println("Which clients account would you like to delete?");
@@ -404,32 +283,34 @@ public class CalculatorInterface
         }
 
         System.out.print("Choice (1,2,3 etc): ");
-        int accNum = belowZeroChecker_int(inputChecker_int(console.next())) - 1;
+        int cliNum = inBounds(belowZeroChecker_int(inputChecker_int(console.next()))); // refer to previous explanation
 
         System.out.println("Which account would you like to delete?");
-        if (cli[accNum].getNumOfAccUsed() == 0) { // checks if number of accounts for the specified accounts is 0
+        if (cli[cliNum].getNumOfAccUsed() == 0) { // checks if number of accounts for the specified accounts is 0
             System.out.println("No accounts created for this client, create an account first.");
         }
-        if(cli[accNum].getNumOfAccUsed()>0){
-            if ((cli[accNum].getNumOfAccUsed() == 1)) {
-                System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
+        if(cli[cliNum].getNumOfAccUsed()>0){
+            if ((cli[cliNum].getNumOfAccUsed() == 1)) {
+                System.out.println("1. Account One, investment: $" + cli[cliNum].getCalcInv(0));
             }
-            if (cli[accNum].getNumOfAccUsed() == 2) {
-                System.out.println("1. Account One, investment: $" + cli[accNum].getCalcInv(0));
-                System.out.println("2. Account Two, investment: $" + cli[accNum].getCalcInv(1));
+            if (cli[cliNum].getNumOfAccUsed() == 2) {
+                System.out.println("1. Account One, investment: $" + cli[cliNum].getCalcInv(0));
+                System.out.println("2. Account Two, investment: $" + cli[cliNum].getCalcInv(1));
             }
             System.out.print("Choice: ");
             int accDel = belowZeroChecker_int(inputChecker_int(console.next()))-1;
+
             System.out.println(accDel);
-            cli[accNum].deleteAccount(accDel); // uses the method inside client to delete the specified account
-            cli[accNum].accountShuffle(); // moves account 2 into account 1 slot if applicable
-            cli[accNum].setAccUsed(false, accNum); // sets the account deleted to not used
+            cli[cliNum].deleteAccount(accDel); // uses the method inside client to delete the specified account
+            cli[cliNum].accountShuffle(); // moves account 2 into account 1 slot if applicable
+            cli[cliNum].setAccUsed(false, cliNum); // sets the account deleted to not used
 
         }
     }
 
-    public void disClient(){
-        //This function displays a specified client
+
+    public void disClient(){ //This function displays a specified client
+
         Scanner console = new Scanner(System.in);
         System.out.println("Which client would you like to view?");
         for (int i = 0; i < 5;i++ ) {
@@ -438,8 +319,7 @@ public class CalculatorInterface
             }
         }
         System.out.print("Choice (1,2,3 etc): ");
-        int view = belowZeroChecker_int(inputChecker_int(console.next()))-1; // selects the client ,-1 negates the above +1
-        System.out.println(view);
+        int view = inBounds(belowZeroChecker_int(inputChecker_int(console.next()))); // selects the client to view
 
         //Prints out all user tax and salary values, shows pre-tax & post tax salary, plus tax applied & medicare levy
         System.out.print("\n");
@@ -486,8 +366,8 @@ public class CalculatorInterface
     }
 
 
-    public void disAccount(){
-        // Displays the specified account
+    public void disAccount(){ // Displays the specified account
+
         Scanner console = new Scanner(System.in);
         System.out.println("Which clients account would you like to view?");
         for (int i = 0; i < 5;i++ ) {
@@ -496,9 +376,8 @@ public class CalculatorInterface
             }
         }
         System.out.print("Choice (1,2,3 etc): ");
-        int view = belowZeroChecker_int(inputChecker_int(console.next()))-1; // selects the client ,-1 negates the above +1
-        System.out.println(view);
-        System.out.println("Client: "+cli[view].getName()+"\n");
+        int view = inBounds(belowZeroChecker_int(inputChecker_int(console.next()))); // selects the client
+        System.out.println("Client: "+cli[view].getName()+"\n"); // prints clients name
 
 
         try{
@@ -527,8 +406,8 @@ public class CalculatorInterface
     }
 
 
-    public void disAllClient(){
-        // Displays all used clients inside the cli array
+    public void disAllClient(){ // Displays all used clients inside the cli array
+
         clientSort(); // this function sorts the cli array by the name var in the client object
         for (Client client : cli) { // loops through the cli array of Client objects
             if (client.getClientUsed()) { // if ClientUsed is false then object cli[i] won't be printed.
@@ -578,6 +457,7 @@ public class CalculatorInterface
 
 
     public void clientShuffle(){ // shuffles the array of Client objects cli, this is used when a client is deleted
+
         int index = 0;
         for(int i=0;i<cli.length;i++){ // loops for the length of cli
             if(cli[i].getClientUsed()){ // this is a var used in cli to declare if the cli object is used
@@ -592,9 +472,8 @@ public class CalculatorInterface
 
     public void clientSort(){ // sorts the array of Client objects cli into alphabetical order
 
-        // simple Client sort
         for(int i=0;i<cli.length-1;i++){ // loops for the length of cli -1
-            for(int j=i+1;j<cli.length;j++){ // loops for the length of i + 1, this is done so i and j are different clients
+            for(int j=i+1;j<cli.length;j++){ // loops for the length of i + 1, this is done so i and j are different cli[]
                 if(cli[i].getName().compareToIgnoreCase(cli[j].getName()) > 0){ // compares the name of cli[i] and cli[j]
                     // if the result of the above if statement is > 0, that means cli[j] is closer to the start of the
                     // alphabet compared to cli[i] (cli[j] is lexicographically first)
@@ -619,6 +498,7 @@ public class CalculatorInterface
 
     public void investTable(Client cliInput, int accNum){
         // This method prints out the investment table
+
         System.out.println("Investment\n Weeks        Balance");
         System.out.println("-------------------------");
         int tempWks = cliInput.getWks(accNum); // sets temp to the number of weeks the investment period is
@@ -631,8 +511,166 @@ public class CalculatorInterface
     }
 
 
-    public void fileSave(){
-        // This method writes all clients into the export file
+    public double inputChecker_double(String input){
+        // This function checks if an input String can be turned into a double
+
+        Scanner console = new Scanner(System.in);
+        double inVar = 0;  // initialises variables
+        boolean loop;
+        String in = input;
+
+        //This is needed so if the user initially enters a double they aren't asked to re-enter it in the while loop
+        try{
+            inVar = Double.parseDouble(in);  // attempts to convert String into a double
+            loop = false;  // the above line doesn't give an error then the loop isn't required
+        }
+        catch(NumberFormatException e){  // exception caused if the String cannot be a double
+            loop = true;
+        }
+
+        while(loop){ // loops until loop = false
+            try {
+                System.out.print("Enter a double: ");
+                in = console.next(); // assigns in the users input
+                inVar = Double.parseDouble(in);
+                loop = false;
+            }
+            catch(NumberFormatException e){
+                System.out.println("That wasn't a double.");
+            }
+        }
+        return inVar; // returns value modified or not
+    }
+
+
+    public int inputChecker_int(String input){
+        // This function is the same as inputChecker_double, refer to that function for comments
+
+        Scanner console = new Scanner(System.in);
+        int inVar = 0;
+        boolean loop;
+        String in = input;
+
+        try{
+            inVar = Integer.parseInt(in);  // attempts to convert String to an int
+            loop = false;
+        }
+        catch(NumberFormatException e){
+            loop = true;
+        }
+
+        while(loop){
+            try {
+                System.out.print("Enter an Integer: ");
+                in = console.next();
+                inVar = Integer.parseInt(in);
+
+                loop = false;
+            }
+            catch(NumberFormatException e){
+                System.out.println("That wasn't an Integer.");
+            }
+        }
+        return inVar;
+    }
+
+
+    public double belowZeroChecker_double(double numInput){
+        // This function checks if the user entered a number below zero and asks them to enter a number above 0
+
+        Scanner console = new Scanner(System.in);
+        boolean above_zero = false;
+        if(numInput <=0){ // checks if the value is already above 0, if so then the while below is bypassed
+            while(!above_zero){ // loops until loop is true
+                System.out.print("Please enter a number above 0: ");
+                numInput = inputChecker_double(console.next()); // takes input, passes through input checker first.
+                if(numInput > 0){ // checks if the new input is above 0
+                    above_zero = true; // stops loop
+                }
+            }
+        }
+        return numInput; // returns modified value
+    }
+
+
+    public int belowZeroChecker_int(int numInput){
+        // This function checks if the user entered a number below zero and asks them to enter a number above 0
+
+        Scanner console = new Scanner(System.in);
+        boolean above_zero = false;
+        if(numInput <=0){ // checks if the value is already above 0, if so then the while below is bypassed
+            while(!above_zero){ // loops until loop is true
+                System.out.print("Please enter a number above 0: ");
+                numInput = inputChecker_int(console.next()); // takes input, passes through input checker first.
+                if(numInput > 0){ // checks if the new input is above 0
+                    above_zero = true; // stops loop
+                }
+            }
+        }
+        return numInput; // returns modified value
+    }
+
+
+    public boolean bool_check(String boolInput){
+        // This function checks if the string input can be parsed into boolean.
+
+        Scanner console = new Scanner(System.in);
+        boolean bool_allowed = false; // initialises variables (vars henceforth)
+        boolean resident = false;
+        while(!bool_allowed){ // loops until bool_allowed = true
+            if (boolInput.equalsIgnoreCase("true") || boolInput.equalsIgnoreCase("false")) {
+                // above if statement compares "true" & "false" to the user input in bool_check var
+                resident = Boolean.parseBoolean(boolInput); // if bool_check var is a bool, it will be converted
+                bool_allowed = true; // stops the loop
+            } else {
+                System.out.print("That's not a boolean, please enter a boolean: ");
+                boolInput = console.next(); // loops until user enters a legal input
+            }
+        }
+        return resident;
+    }
+
+
+    public String isNameAllowed(String nameIn){ // checks if the user has entered a first and last name
+
+        Scanner console = new Scanner(System.in);
+        String[] split_name = nameIn.split(" "); // splits input string into a String array
+
+        boolean name_allowed = false;
+        while(!name_allowed){ // loops until true
+            if(split_name.length != 2){ // if this is false user hasn't entered two names
+                System.out.print("Please enter a first and last name: ");
+                nameIn = console.nextLine(); // takes new input
+                split_name = nameIn.split(" "); // splits new input, loops until array len ==2
+            }
+            else{
+                name_allowed = true; // ends loop
+            }
+        }
+        return nameIn; // returns potentially modified nane.
+    }
+
+
+    public int inBounds(int clientChoice){
+        // checks if user input is inside the bounds of the client array currently used
+        Scanner console = new Scanner(System.in);
+        boolean inBounds = false;
+        while(!inBounds){
+            if(clientChoice>numOfCliUsed){
+                System.out.print("Please choose a client number listed: ");
+                clientChoice = belowZeroChecker_int(inputChecker_int(console.next()));
+            }
+            else{
+                inBounds = true; // ends loop
+            }
+        }
+        clientChoice-=1; // because client list starts at 1, and cli[] at 0, user choice will be 1 high
+
+        return clientChoice; // returns value that is inside bounds
+    }
+
+
+    public void fileSave(){ // This method writes all clients into the export file
 
         BufferedWriter bw = null; // creates the BufferedReader as null, so it's outside the try
         try{
@@ -662,7 +700,7 @@ public class CalculatorInterface
         finally // runs on try completion
         {
             try{
-                if(bw!=null) // makes sure bw object isn't still null before closing
+                if(bw!=null) // makes sure bw object isn't null before closing
                     bw.close(); // closes the BufferedReader, without this step data stream doesn't end = file blank
 
             } catch (IOException e) {
@@ -672,7 +710,7 @@ public class CalculatorInterface
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args){  // calc class main method
         CalculatorInterface calc = new CalculatorInterface(); // creates new CalculatorInterface object as calc
         calc.menu(); // launches the menu
     }

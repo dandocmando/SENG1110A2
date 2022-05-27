@@ -213,7 +213,7 @@ public class Client
         accA = "No Account";
         accB = "No Account";
         try{
-            if (getAccUsed(0)) {
+            if (getAccUsed(0)) { // checks if acc 0 has been used
                 accA = "Returns="+String.valueOf(getCalcInv(0))+", Weekly Investment="+getInv(0)
                 +", Rate="+getRate(0)+", Weeks="+getWks(0);
             }
@@ -223,12 +223,12 @@ public class Client
             }
         }
         catch(NullPointerException e){
-            System.out.println("");
+            // no changes need to be made if the try fails, the String vars simply aren't modified
         }
     }
 
     @Override
-    public String toString() {
+    public String toString() { // this is the function used to output the Client data to a txt file
 
         return "Client{" +
                 "name='" + name + '\'' +
