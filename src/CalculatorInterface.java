@@ -3,6 +3,7 @@ Author: Daniel Ferguson
 Auth ID: 3374690
 Date: 27/05/2022
 Description: Calculator Interface Class, outputs all the calculations inside the two other classes.
+Creates and manages multiple clients and their accounts
 SENG1110 Programming Assignment 2
  */
 
