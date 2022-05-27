@@ -63,7 +63,6 @@ public class Client
 
     public void accountShuffle(){ // this is a duplicate of clientShuffle in calc
         int index = 0;
-        System.out.println(getNumOfAccUsed());
         if(getNumOfAccUsed()>0){ // clients with 0 accounts don't need to be modified
             for(int i = 0; i<acc.length; i++){ //refer to clientShuffle for comments
                 if(getAccUsed(i)){
@@ -74,7 +73,6 @@ public class Client
                 }
             }
         }
-
     }
 
 
@@ -138,17 +136,12 @@ public class Client
         // used to calculate the possible investment into Account
 
         double alreadyInvested = 0; // this is used to deduct the amount already invested from the possible investment
-        try{ // acc might be null.
 
-            if (acc[0].getAccUsed()) { // checks if acc[0] has been used
-                alreadyInvested += acc[0].getInv(); // adds the investment amount to already invested
-            }
-            if (acc[1].getAccUsed()) {
-                alreadyInvested += acc[1].getInv();
-            }
-
-        } catch(NullPointerException e) { // catches the error caused if the Account object hasn't been constructed
-
+        if (acc[0].getAccUsed()) { // checks if acc[0] has been used
+            alreadyInvested += acc[0].getInv(); // adds the investment amount to already invested
+        }
+        if (acc[1].getAccUsed()) {
+            alreadyInvested += acc[1].getInv();
         }
 
         //doubleValue converts BigDecimal to double, I like this way because it rounds and returns the val in one line
@@ -211,10 +204,6 @@ public class Client
         else{return acc[1].getAccUsed();}
     }
 
-    public void setAccUsed(boolean setValue, int num) { // sets if a specified account has been used, can have t/f input
-        if (num == 0) {acc[num].setAccUsed(setValue);}
-        if(num == 1){acc[num].setAccUsed(setValue);}
-    }
 
     public void toStringPrep() { // function used to manipulate the toString return itinerary.
 

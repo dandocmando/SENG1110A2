@@ -19,21 +19,6 @@ public class CalculatorInterface
         for (int i=0;i<5;i++){ // loops 5 times
             cli[i] = new Client(); // creates 5 new cli Client objects
         }
-
-        cli[0] = new Client("daniel ferguson",90000,true,200);
-        cli[1] = new Client("john kok",45000,true,350);
-        cli[2] = new Client("zzz pppp",45000,true,350);
-        cli[3] = new Client("aaa ddd",45000,true,350);
-
-        cli[0].createAccount(0.2,52,200);
-        cli[0].createAccount(0.2,35,600);
-        cli[1].createAccount(0.2,52,400);
-
-        cli[0].setClientUsed(true);
-        cli[1].setClientUsed(true);
-        cli[2].setClientUsed(true);
-        cli[3].setClientUsed(true);
-
     }
 
 
@@ -64,7 +49,7 @@ public class CalculatorInterface
             System.out.println("0. End Program");
             System.out.print("Choice: ");
 
-            int menu_choice = console.nextInt(); // determines which case is used
+            int menu_choice = inputChecker_int(console.next()); // determines which case is used
             switch(menu_choice){
                 case 1 -> addClient();
                 case 2 -> delClient();
@@ -298,10 +283,10 @@ public class CalculatorInterface
                 System.out.println("1. Account One, investment: $" + cli[cliNum].getCalcInv(0));
                 System.out.println("2. Account Two, investment: $" + cli[cliNum].getCalcInv(1));
             }
+
             System.out.print("Choice: ");
             int accDel = belowZeroChecker_int(inputChecker_int(console.next()))-1;
             boolean accBounds = false;
-            System.out.println(cli[cliNum].getNumOfAccUsed()-1);
             while(!accBounds){
                 if(accDel> cli[cliNum].getNumOfAccUsed()-1){
                     System.out.print("Try again: ");
@@ -312,11 +297,8 @@ public class CalculatorInterface
                 }
             }
 
-            System.out.println(accDel);
             cli[cliNum].deleteAccount(accDel); // uses the method inside client to delete the specified account
             cli[cliNum].accountShuffle(); // moves account 2 into account 1 slot if applicable
-            //cli[cliNum].setAccUsed(false, cliNum); // sets the account deleted to not used
-
         }
     }
 
@@ -689,7 +671,7 @@ public class CalculatorInterface
         try{
             File file = new File("export.txt"); // new File class created as file object
             bw = new BufferedWriter(new FileWriter(file)); // new BufferedWriter and FileWriter class created
-            if(!cli[0].getClientUsed()){ // this checks if cli[0] is flagged as used, because of the clientShuffle system
+            if(numOfCliUsed==0){ // if this = 0 then no clients have been created
                 // the first client slot will always be filled
                 bw.write("No Clients."); // writes no clients to the file
             }
