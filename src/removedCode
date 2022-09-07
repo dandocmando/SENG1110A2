@@ -1,0 +1,5 @@
+Arrays.sort(cli, Client::compareArray);
+public static int compareArray(Client cliA, Client cliB){ // used by CalculatorInterface to compare client objects
+        return cliA.getName().compareTo(cliB.getName());  //sorts client objects according to getName and returns them
+        in alphabetical order
+    } //removed due to complexity

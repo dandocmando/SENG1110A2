@@ -1,28 +1,33 @@
 /*
 Author: Daniel Ferguson
 Auth ID: 3374690
-Date: 09/05/2022
+Date: 27/05/2022
 Description: Account Class, calculates the users' investment valuation
 SENG1110 Programming Assignment 2
  */
 
 import java.math.BigDecimal; // used to round vars to 2 dec places x2
 import java.math.RoundingMode;
-import java.io.Serializable;
 
-public class Account implements Serializable
+public class Account
 {
-    private double inv_rate; // investment rate as a % (0.29)
+    private double inv_rate; // investment rate as a % eg 0.2
     private int num_wks; // number of weeks the investment stays invested
     private double inv; // value of weekly contribution
+    private boolean accUsed; // used to query the object as to whether the account has been used
 
-    public Account(double investmentRate, int numberOfWeeks, double investment){
-        this.inv_rate = investmentRate;
-        this.num_wks = numberOfWeeks;
-        this.inv = investment;
+
+    public Account(){ // default constructor
+        accUsed = false; // sets accUsed to false as default
     }
 
-    public Account(){}
+    public Account(double investmentRate, int numberOfWeeks, double investment, boolean accUsed){
+        // constructor used for creating client accounts
+        inv_rate = investmentRate;
+        num_wks = numberOfWeeks;
+        inv = investment;
+        this.accUsed = accUsed;
+    }
 
 
     public double calcInv(){
@@ -30,21 +35,20 @@ public class Account implements Serializable
         double t = 1; // if we wanted to calculate investment over multiple years this would be used
         int n = 52; // number of weeks in a year, I have used small var names to condense the FV line of code
 
-        //FA = inv*(1+(inv_rate/100)/numberOfWeeks)*Math.pow(51,1); // previous attempts at creating algo
-        //FA = Math.pow((1+inv_rate/12), 12)+(Math.pow((1+inv_rate/12), 12)-1)/(inv_rate/12);
-        //FA = ((Math.pow((1+(inv_rate/12)), 12)*inv-1) / (inv_rate/12)) + 5*Math.pow((1+(inv_rate/12)), 12);
-
-        FV = inv*((Math.pow((1+inv_rate/n),(num_wks*t))-1)/(inv_rate/n))*(1+inv_rate/n);
-        // a complicated (but far superior) way of finding the compound interest from
-        // regular contributions. This one line was the hardest part of the assignment to create.
-        // this formula compounds weekly and can calculate the value from 1 to 52 weeks, years can be easily implemented.
-        // also calculates assuming that the contribution is made at the start of each week.
+        FV = inv*((Math.pow((1+inv_rate/n),(num_wks*t))-1)/(inv_rate/n)); //*(1+inv_rate/n); // removed so calc is at weeks end
+        // calculates the investment, desc removed
 
         return new BigDecimal(FV).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
-    public void setinv_Rate(double inputRate){ inv_rate = inputRate/100;}
-    public double getinvRate()
+    public double calcContribution(){ // calculates investment without interest applied
+        return new BigDecimal(inv*num_wks).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+    }
+
+
+    // setters and getters
+    public void setInvRate(double inputRate){ inv_rate = inputRate/100;}
+    public double getInvRate()
     {
         return(inv_rate);
     }
@@ -55,4 +59,6 @@ public class Account implements Serializable
     public void setNum_wks(int inputWeeks){ num_wks = inputWeeks;}
     public int getNum_wks(){return num_wks;}
 
+    public void setAccUsed(boolean inputUsed){accUsed = inputUsed;}
+    public boolean getAccUsed(){return accUsed;}
 }
